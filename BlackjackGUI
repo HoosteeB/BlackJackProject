@@ -17,6 +17,7 @@ public class BlackjackGUI  {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
         frame.setTitle("Blackjack");
+	frame.setLocationRelativeTo(null);
 		///////////////////////////////////////////////////////////////////////////////////
 		// get a screen size and put a frame on the center of screen
 		Dimension screenSize = new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
