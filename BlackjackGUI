@@ -1,11 +1,12 @@
 
+
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 
 public class BlackjackGUI  {
-	public static final int FRAME_WIDTH = 400;
-	public static final int FRAME_HEIGHT = 430;
+	public static final int FRAME_WIDTH = 800;
+	public static final int FRAME_HEIGHT = 600;
 	
 	public static void main(String[] args) {
 		new BlackjackGUI();
@@ -17,19 +18,36 @@ public class BlackjackGUI  {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
         frame.setTitle("Blackjack");
-	frame.setLocationRelativeTo(null);
+        frame.setLocationRelativeTo(null);
 		///////////////////////////////////////////////////////////////////////////////////
 		// get a screen size and put a frame on the center of screen
 		Dimension screenSize = new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
 		frame.setLocation(new Point((int)(screenSize.width/2.0), 
-						(int)(screenSize.height/2.0 )));	
+						(int)(screenSize.height/2.0)));	
 		///////////////////////////////////////////////////////////////////////////////////
 		
 		frame.setLayout(new BorderLayout());
 		
-		JPanel south = new JPanel(new GridLayout());
-		frame.add(south, BorderLayout.NORTH);
+		
+		JPanel south = new JPanel(new FlowLayout());
+		JPanel south2 = new JPanel(new FlowLayout());
+		JPanel center = new JPanel();
+		
+		center.setBackground(Color.GREEN);
 	
+		
+		frame.add(center, BorderLayout.CENTER);
+		
+		south.add(new JLabel("Bet Amount: "));
+		south.add(new JTextField("Place your bets!"));
+		frame.add(south, BorderLayout.SOUTH);
+		
+		south2.add(new JButton("Hit"));
+		south2.add(new JButton("Double"));
+		south2.add(new JButton("Stand"));
+		frame.add(south2, BorderLayout.SOUTH);
+		
+		
 		
 		//frame.add();
 		
