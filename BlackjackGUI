@@ -1,0 +1,38 @@
+
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+
+public class BlackjackGUI  {
+	public static final int FRAME_WIDTH = 400;
+	public static final int FRAME_HEIGHT = 430;
+	
+	public static void main(String[] args) {
+		new BlackjackGUI();
+	}
+	
+	public BlackjackGUI() {
+		//JFrame configuration
+		JFrame frame = new JFrame("Blackjack");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+        frame.setTitle("Blackjack");
+		///////////////////////////////////////////////////////////////////////////////////
+		// get a screen size and put a frame on the center of screen
+		Dimension screenSize = new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
+		frame.setLocation(new Point((int)(screenSize.width/2.0), 
+						(int)(screenSize.height/2.0 )));	
+		///////////////////////////////////////////////////////////////////////////////////
+		
+		frame.setLayout(new BorderLayout());
+		
+		JPanel south = new JPanel(new GridLayout());
+		frame.add(south, BorderLayout.NORTH);
+	
+		
+		//frame.add();
+		
+		frame.setVisible(true);
+	}
+	
+}
