@@ -1,57 +1,71 @@
 
-
 import java.awt.*;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
-public class BlackjackGUI  {
+public class BlackjackGUI {
 	public static final int FRAME_WIDTH = 800;
 	public static final int FRAME_HEIGHT = 600;
-	
+
 	public static void main(String[] args) {
 		new BlackjackGUI();
 	}
-	
+
 	public BlackjackGUI() {
-		//JFrame configuration
-		JFrame frame = new JFrame("Blackjack");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
-        frame.setTitle("Blackjack");
-        frame.setLocationRelativeTo(null);
-		///////////////////////////////////////////////////////////////////////////////////
-		// get a screen size and put a frame on the center of screen
-		Dimension screenSize = new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
-		frame.setLocation(new Point((int)(screenSize.width/2.0), 
-						(int)(screenSize.height/2.0)));	
-		///////////////////////////////////////////////////////////////////////////////////
-		
-		frame.setLayout(new BorderLayout());
-		
-		
-		JPanel south = new JPanel(new FlowLayout());
-		JPanel south2 = new JPanel(new FlowLayout());
-		JPanel center = new JPanel();
-		
-		center.setBackground(Color.GREEN);
-	
-		
-		frame.add(center, BorderLayout.CENTER);
-		
-		south.add(new JLabel("Bet Amount: "));
-		south.add(new JTextField("Place your bets!"));
-		frame.add(south, BorderLayout.SOUTH);
-		
-		south2.add(new JButton("Hit"));
-		south2.add(new JButton("Double"));
-		south2.add(new JButton("Stand"));
-		frame.add(south2, BorderLayout.SOUTH);
-		
-		
-		
-		//frame.add();
-		
-		frame.setVisible(true);
+		// JFrame configuration
+		try {
+			JFrame frame = new JFrame("Blackjack");
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.setSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+			frame.setTitle("Blackjack");
+			frame.setLocationRelativeTo(null);
+			///////////////////////////////////////////////////////////////////////////////////
+			// get a screen size and put a frame on the center of screen
+			Dimension screenSize = new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
+			frame.setLocation(new Point((int) (screenSize.width / 2.0), (int) (screenSize.height / 2.0)));
+			///////////////////////////////////////////////////////////////////////////////////
+
+			frame.setLayout(new BorderLayout());
+
+			JPanel north = new JPanel(new FlowLayout());
+			JPanel south = new JPanel(new FlowLayout());
+
+//		north.add(new JLabel("Bet Amount: "));
+//		north.add(new JTextField("Place your bets!"));
+			BufferedImage img = ImageIO.read(new File("1.png"));
+			JLabel pic = new JLabel(new ImageIcon(img));
+			BufferedImage img2 = ImageIO.read(new File("14.png"));
+			JLabel pic2 = new JLabel(new ImageIcon(img2));
+
+			north.add(pic);
+			north.add(pic2);
+
+			frame.add(north, BorderLayout.NORTH);
+
+			BufferedImage img3 = ImageIO.read(new File("3.png"));
+			JLabel pic3 = new JLabel(new ImageIcon(img3));
+			BufferedImage img4 = ImageIO.read(new File("50.png"));
+			JLabel pic4 = new JLabel(new ImageIcon(img4));
+
+			south.add(pic3);
+			south.add(pic4);
+//		south.add(new JButton("Hit"));
+//		south.add(new JButton("Double"));
+//		south.add(new JButton("Stand"));
+			frame.add(south, BorderLayout.SOUTH);
+
+			// frame.add();
+
+			frame.setVisible(true);
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 }
