@@ -1,6 +1,4 @@
-
 import java.awt.*;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.event.*;
@@ -60,27 +58,6 @@ public class BlackjackGUI extends JPanel {
 
 				
 				////////////////////////////////////////////////////////////////////////////////////////
-				//North Panel or Dealer's Panel
-
-
-				String dealersFirstCard = newCards.pop();
-				BufferedImage img = ImageIO.read(new File("BacksideOfCard.png"));
-				JLabel pic = new JLabel(new ImageIcon(img));
-				int dealerCV1 = cardValue(dealersFirstCard);
-				System.out.println("Dealer's 1st Card: " + dealersFirstCard + "\n \t Card Value: " + dealerCV1);
-				
-				String dealersSecondCard = newCards.pop();
-				BufferedImage img2 = ImageIO.read(new File(dealersSecondCard));
-				JLabel pic2 = new JLabel(new ImageIcon(img2));
-				int dealerCV2 = cardValue(dealersSecondCard);
-				System.out.println("Dealer's 2nd Card: " + dealersSecondCard + "\n \t Card Value: " + dealerCV2);
-				
-				//pic is put right of the pic2
-				north.add(pic2);
-				north.add(pic);
-
-
-				//////////////////////////////////////////////////////////////////////////////////////
 				//Center Panel or Player's Panel
 
 
@@ -96,68 +73,139 @@ public class BlackjackGUI extends JPanel {
 				int playersCV2 = cardValue(playersSecondCard);
 				System.out.println("Player's 2nd Card: " + playersSecondCard + "\n \t Card Value: " + playersCV2);
 				
-
+				
+				int playerTotal = playersCV1 + playersCV2;
+				//int playerTotal = 21;
+				System.out.println("Player Total: " + playerTotal);
+				
 				center.add(pic4);
 				center.add(pic3);
+				
+				
+
+				//////////////////////////////////////////////////////////////////////////////////////
+				//North Panel or Dealer's Panel
+
+
+				String dealersFirstCard = newCards.pop();
+				BufferedImage img = ImageIO.read(new File("BacksideOfCard.png"));
+				JLabel pic = new JLabel(new ImageIcon(img));
+				int dealerCV1 = cardValue(dealersFirstCard);
+				System.out.println("Dealer's 1st Card: " + dealersFirstCard + "\n \t Card Value: " + dealerCV1);
+				
+				String dealersSecondCard = newCards.pop();
+				BufferedImage img2 = ImageIO.read(new File(dealersSecondCard));
+				JLabel pic2 = new JLabel(new ImageIcon(img2));
+				int dealerCV2 = cardValue(dealersSecondCard);
+				System.out.println("Dealer's 2nd Card: " + dealersSecondCard + "\n \t Card Value: " + dealerCV2);
+				
+				int dealerTotal = dealerCV1 + dealerCV2;
+				//int dealerTotal = 21;
+				//pic is put right of the pic2
+				north.add(pic2);
+				north.add(pic);
 
 
 				////////////////////////////////////////////////////////////////////////////////////////
 				//South Panel
 
 
-				JButton Hit = new JButton();
-				Hit.setFont(new Font("Plain", Font.BOLD, 20));
-				Hit.setText("Hit");
-				Hit.setBackground(Color.WHITE);
-				/*Hit.addActionListener(new ActionListener() {
+				JButton hitBtn = new JButton();
+				hitBtn.setFont(new Font("Plain", Font.BOLD, 20));
+				hitBtn.setText("Hit");
+				hitBtn.setBackground(Color.WHITE);
+				hitBtn.addActionListener(new ActionListener() {
 	
 					public void actionPerformed(ActionEvent e) {
-						try { 
-						String fifthCard = newCards.pop();
-						
-						BufferedImage img5 = ImageIO.read(new File(fifthCard));
-						JLabel pic5 = new JLabel(new ImageIcon(img5));
-						int CardValue5 = cardValue(fourthCard);
-						
-						Hit.add(pic5);
-						repaint();
-						} catch (IOException e2) {
-							e2.printStackTrace();
-						}
-					}
-				}); */
+						hitProcess();
+					} } ); 
 
-				JButton Double = new JButton();
-				Double.setFont(new Font("Plain", Font.BOLD, 20));
-				Double.setText("Double");
-				Double.setBackground(Color.WHITE);
+				JButton doubleBtn = new JButton();
+				doubleBtn.setFont(new Font("Plain", Font.BOLD, 20));
+				doubleBtn.setText("Double");
+				doubleBtn.setBackground(Color.WHITE);
+				doubleBtn.addActionListener(new ActionListener() {
+					
+					public void actionPerformed(ActionEvent e) {
+						doubleProcess();
+					} } );
 
-				JButton Stand = new JButton();
-				Stand.setFont(new Font("Plain", Font.BOLD, 20));
-				Stand.setText("Stand");
-				Stand.setBackground(Color.WHITE);
+				JButton standBtn = new JButton();
+				standBtn.setFont(new Font("Plain", Font.BOLD, 20));
+				standBtn.setText("Stand");
+				standBtn.setBackground(Color.WHITE);
+				standBtn.addActionListener(new ActionListener() {
+					
+					public void actionPerformed(ActionEvent e) {
+						standProcess();
+					} } );
 
-
-				south.add(Hit);
-				south.add(Double);
-				south.add(Stand);
+				south.add(hitBtn);
+				south.add(doubleBtn);
+				south.add(standBtn);
 
 				/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 				//Adding all the changes to the panel to the frame
 				frame.add(north, BorderLayout.NORTH);
 				frame.add(center, BorderLayout.CENTER);
 				frame.add(south, BorderLayout.SOUTH);
-
-
-
+				
+				
 				frame.setVisible(true);
+				checkPlayerBlackjack(playerTotal, dealerTotal);
 			} 
 			catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
+	}
+	/* List Of Methods needed:
+	 * - Flip over dealer card
+	 * - Dealer turn after stand
+	 */
+	public static void checkPlayerBlackjack(int playerTotal, int dealerTotal) {
+			
+			if (playerTotal == 21) {
+				String btnText = "YOU HAVE BLACKJACK";
+				JOptionPane.showMessageDialog(null, btnText);
+				new BlackjackGUI();
+				
+			} else checkDealerBlackjack(dealerTotal);
+	}
+	public static void checkDealerBlackjack(int dealerTotal) {
+		
+		if (dealerTotal == 21) {
+			String btnText = "DEALER HAS BLACKJACK";
+			JOptionPane.showMessageDialog(null, btnText);
+			new BlackjackGUI();
+		} 
+}
 	
-
+	public static void doubleProcess() {
+		
+	}
+	
+	public static void standProcess() {
+		
+	}
+	
+	public static void hitProcess() {
+		
+	/*}
+		try { 
+			String fifthCard = newCards.pop();
+			
+			BufferedImage img5 = ImageIO.read(new File(fifthCard));
+			JLabel pic5 = new JLabel(new ImageIcon(img5));
+			int CardValue5 = cardValue(pic5);
+			
+			hitBtn.add(pic5);
+			repaint();
+			} catch (IOException e2) {
+				e2.printStackTrace();
+			} */
+		
+	} 
+	
 	public static void shuffle(Stack<String> newCards) {
 		ArrayList<String> cards = new ArrayList<String>();
 		cards.addAll(Arrays.asList("2OfSpades.png", "3OfSpades.png", "4OfSpades.png", "5OfSpades.png", "6OfSpades.png", "7OfSpades.png", "8OfSpades.png", "9OfSpades.png", "10OfSpades.png", "JackOfSpades.png", "KingOfSpades.png", "QueenOfSpades.png", "AceOfSpades.png",
