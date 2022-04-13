@@ -137,7 +137,7 @@ public class BlackjackGUI extends JPanel {
 				standBtn.addActionListener(new ActionListener() {
 					
 					public void actionPerformed(ActionEvent e) {
-						standProcess();
+						standProcess(dealerTotal, dealerCV1, dealerCV2);
 					} } );
 
 				south.add(hitBtn);
@@ -162,6 +162,8 @@ public class BlackjackGUI extends JPanel {
 	 * - Flip over dealer card
 	 * - Dealer turn after stand
 	 */
+	
+
 	public static void checkPlayerBlackjack(int playerTotal, int dealerTotal) {
 			
 			if (playerTotal == 21) {
@@ -169,23 +171,31 @@ public class BlackjackGUI extends JPanel {
 				JOptionPane.showMessageDialog(null, btnText);
 				new BlackjackGUI();
 				
-			} else checkDealerBlackjack(dealerTotal);
+			} else if (dealerTotal == 21) {
+				String btnText = "DEALER HAS BLACKJACK";
+				JOptionPane.showMessageDialog(null, btnText);
+				new BlackjackGUI();
+			} 
 	}
-	public static void checkDealerBlackjack(int dealerTotal) {
-		
-		if (dealerTotal == 21) {
-			String btnText = "DEALER HAS BLACKJACK";
-			JOptionPane.showMessageDialog(null, btnText);
-			new BlackjackGUI();
-		} 
-}
+	
+
 	
 	public static void doubleProcess() {
 		
 	}
 	
-	public static void standProcess() {
-		
+	public static void standProcess(int dealerTotal, int dealerCV1, int dealerCV2) {
+		if(17 < dealerTotal && dealerTotal < 22) {
+			//stand
+		} else if (dealerTotal < 17) {
+			while (dealerTotal < 17) {
+				//hit
+			}
+		} else if (dealerTotal == 17 && (dealerCV1 == 11 || dealerCV2 == 11) { 
+			
+		} else {
+			//bust
+		}
 	}
 	
 	public static void hitProcess() {
