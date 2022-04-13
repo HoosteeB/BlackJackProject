@@ -1,12 +1,21 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Hand {
+	ArrayList<Card> hand = new ArrayList<Card>();
+	// TODO Auto-generated method stub
+	
+	Deck newCards = new Deck();
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		ArrayList<String> hand = new ArrayList<String>();
-		hand.add(Arrays.asList(1,1));
+	public void addCard(Card card) {
+		hand.add(card);
 	}
 
+	public int getTotal() {
+		int sum = 0;
+		int i;
+		for (Card c : hand) {
+			sum += c.getValue();
+		}
+		return sum;
+	}
 }
