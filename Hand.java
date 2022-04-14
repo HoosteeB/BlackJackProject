@@ -15,7 +15,16 @@ public class Hand {
 		for (Card c : hand) {
 			sum += c.getValue();
 		}
-		System.out.print(sum);
 		return sum;
+	}
+
+	public boolean contains(Pip pip) {
+		// TODO Auto-generated method stub
+		for (Card c : hand) {
+			if (c.pip == pip) {
+				return true;
+			}
+		} 
+		return false;
 	}
 }
