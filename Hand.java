@@ -12,10 +12,10 @@ public class Hand {
 
 	public int getTotal() {
 		int sum = 0;
-		int i;
 		for (Card c : hand) {
 			sum += c.getValue();
 		}
+		System.out.print(sum);
 		return sum;
 	}
 }
