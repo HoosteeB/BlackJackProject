@@ -1,0 +1,28 @@
+public class GameManager {
+	Deck deck = new Deck();
+	Player player = new Player();
+	Dealer dealer = new Dealer();
+	
+	
+	public GameManager() {
+		for (int i = 1; i <=2; i++) {
+			playerDeal();
+			dealerDeal();
+		}
+	}
+	
+	public static void playerDeal() {
+		player.addCard(deck.draw());
+	}
+	
+	public static void dealerDeal() {
+		dealer.addCard(deck.draw());
+	}
+	
+	public static void winOrLose() {
+		
+	}
+	
+	
+}
+
