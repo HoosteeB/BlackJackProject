@@ -1,14 +1,42 @@
+
 public class GameManager {
 	Deck deck = new Deck();
-	Player player = new Player();
-	Dealer dealer = new Dealer();
+	Player player = new Player(this);
+	Dealer dealer = new Dealer(this);
 	
 	
-	public GameManager() {
+	public GameManager(Player player, Dealer dealer) {
+		this.player = player;
+		this.dealer = dealer;
+		//1) place bets
+			//removes amount player bets
+				//bets can't exceed the amount you currently have
+		
+		//2) Game start by dealing out cards the 4 cards
 		for (int i = 1; i <=2; i++) {
 			playerDeal();
 			dealerDeal();
 		}
+		//3) winOrLose
+		
+		//4) actionListener 
+			//Hit gives the player an extra card
+				//If players card value exceeds 21 then bust
+					//Lose money and restart game with new amount of money
+		
+			//Double if doesn't exceed current money
+				//Gives player only one card and ends turn
+					//If players total cards exceeds 21 then bust
+						//Lose money and restart with new amount of money
+		
+			//Stand changes over to where player can't play and the dealer can add cards and play
+				//If dealer has less than 17 then add cards until hitting 17
+					//If dealer busts then return amount doubled
+		
+		//5) restart game with new amount of money and shuffle cards
+		
+		//6) If you have $0 after the round ends and you lose against dealer.
+			//Restart the game with a certain amount.
 	}
 	
 	public static void playerDeal() {
@@ -20,7 +48,13 @@ public class GameManager {
 	}
 	
 	public static void winOrLose() {
-		
+		//Blackjack
+		if(player.getTotal() == 21) {
+			
+		} else if (dealer.getTotal() == 21) {
+			
+		}
+		//Bust
 	}
 	
 	
