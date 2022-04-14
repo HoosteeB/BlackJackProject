@@ -1,9 +1,9 @@
 
 public class Player {
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+	Hand hand = new Hand();
+	
+	
+	public void addCard(Card card) {
+		hand.addCard(card);
 	}
-
 }
