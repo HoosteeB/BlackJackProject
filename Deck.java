@@ -5,6 +5,8 @@ import java.util.Stack;
 
 public class Deck {
 
+	Stack<Card> newCards = new Stack<Card>();
+	
 	Card[] deck1 = { new Card(Suit.spades, Pip.two, 2, "2OfSpades.png"),
 			new Card(Suit.spades, Pip.three, 3, "3OfSpades.png"), new Card(Suit.spades, Pip.four, 4, "4OfSpades.png"),
 			new Card(Suit.spades, Pip.five, 5, "5OfSpades.png"), new Card(Suit.spades, Pip.six, 6, "6OfSpades.png"),
@@ -50,7 +52,7 @@ public class Deck {
 	}
 
 	public void shuffle(Card[] deck1) {
-		Stack<Card> newCards = new Stack<Card>();
+		
 		ArrayList<Card> cards = new ArrayList<Card>();
 
 		cards.addAll(Arrays.asList(deck1));
@@ -59,5 +61,9 @@ public class Deck {
 		for (Card c : cards) {
 			newCards.push(c);
 		}
+	}
+	
+	public Card draw() {
+		return newCards.pop();
 	}
 }
