@@ -1,15 +1,17 @@
-
 public class Player {
-
-Hand hand = new Hand();
-Money money = new Money();	
-
-	public void addPlayerCard(Card c) {
-		hand.addCard(c);
+	Hand hand = new Hand();
+	//GameManager game = new GameManager(null, null);
+	
+	public Player(/*GameManager game*/) {
+		//this.game = game;
 	}
-	public int getPlayerTotal(Hand hand) {
+	
+	public void addPlayerCard() {
+		hand.addCard();
+	}
+	
+	public int getPlayerTotal() {
 		int total = hand.getTotal();
 		return total;
 	}
 }
-
