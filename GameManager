@@ -1,23 +1,29 @@
-
 public class GameManager {
 	Deck deck = new Deck();
-	Player player = new Player(this);
-	Dealer dealer = new Dealer(this);
+	Player player = new Player();
+	Dealer dealer = new Dealer();
 	
 	
-	public GameManager(Player player, Dealer dealer) {
-		this.player = player;
-		this.dealer = dealer;
+	public GameManager() {
+
 		//1) place bets
 			//removes amount player bets
 				//bets can't exceed the amount you currently have
 		
 		//2) Game start by dealing out cards the 4 cards
 		for (int i = 1; i <=2; i++) {
-			playerDeal();
-			dealerDeal();
+			playerDeal(player, deck);
+			System.out.println("Player total: " + player.getPlayerTotal());
+			dealerDeal(dealer, deck);
+			System.out.println("Dealer total: " + dealer.getDealerTotal());
+			
 		}
+		
+		
+		
+		
 		//3) winOrLose
+		
 		
 		//4) actionListener 
 			//Hit gives the player an extra card
@@ -39,24 +45,31 @@ public class GameManager {
 			//Restart the game with a certain amount.
 	}
 	
-	public static void playerDeal() {
-		player.addCard(deck.draw());
+	public static void playerDeal(Player player, Deck deck) {
+		player.addPlayerCard();
+	
 	}
 	
-	public static void dealerDeal() {
-		dealer.addCard(deck.draw());
+	public static void dealerDeal(Dealer dealer, Deck deck) {
+		dealer.addDealerCard();
 	}
 	
-	public static void winOrLose() {
+	public static void winOrLose(Player player, Dealer dealer, Deck deck) {
 		//Blackjack
-		if(player.getTotal() == 21) {
-			
-		} else if (dealer.getTotal() == 21) {
-			
+		if (player.getPlayerTotal() == 21) {
+			//Return a YOU WIN BOX
+			//Return original bet + earnings + half earnings
+			//Restart game with new amount
+		} else if (dealer.getDealerTotal() == 21) {
+			//Return a YOU LOSE BOX
+			//Restart game with new amount
 		}
 		//Bust
 	}
 	
+	public static void hit() {
+		
+	}
+	
 	
 }
-
