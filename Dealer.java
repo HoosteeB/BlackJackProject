@@ -1,27 +1,32 @@
-
 public class Dealer {
 	
 	Hand hand = new Hand();
-	
-	
-	public void addDealerCard(Card c) {
-		hand.addCard(c);
+	//GameManager game = new GameManager(null, null);
+	public Dealer(/*GameManager game*/) {
+		//this.game = game;
 	}
-	public int getDealerTotal(Hand hand) {
+	
+	public void addDealerCard() {
+		hand.addCard();
+	}
+	public int getDealerTotal() {
 		int total = hand.getTotal();
 		return total;
 	}
-	public int dealersTurn() {
-		int tot = getDealerTotal(hand);
-		while (tot < 17) {
-			addDealerCard(null);
-		} if (tot > 17 && 17 < 22) {
-			return tot;
-		} else if (tot == 17 && hand.contains(Pip.ace)){  
-			x = GameManager.hit;
-			addDealerCard(x);
-		}else {
-			return tot;
+	public String dealersTurn() {
+		int total = getDealerTotal();
+		while (total < 17) {
+			addDealerCard();
+			total = getDealerTotal();
+		} 
+		
+		 if (total >= 17 && total <= 22) {
+			return "This card is in beween 17 and 21. Card total is " + total + ".";
+		} else if (total == 17 && hand.contains(FaceValue.ace)){  
+			return "This cotains an Ace. Card total is" + total + ".";
+		} else {
+			return "Bust!!! Card total is  " + total + ".";
+		} 
+	
 	}
 }
-	
