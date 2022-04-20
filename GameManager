@@ -1,25 +1,39 @@
+
 public class GameManager {
+
 	Deck deck = new Deck();
-	Player player = new Player();
-	Dealer dealer = new Dealer();
+
+	Player player = new Player(this);
+	Dealer dealer = new Dealer(this);
+	
+
 	
 	
 	public GameManager() {
+		
+		startGame();
+		
+		
+		System.out.println(player);
+		System.out.print(player.getPlayerTotal());
+		System.out.println("\n\n" + dealer);
+		System.out.println(dealer.getDealerTotal());
 
+		
 		//1) place bets
 			//removes amount player bets
 				//bets can't exceed the amount you currently have
 		
 		//2) Game start by dealing out cards the 4 cards
-		for (int i = 1; i <=2; i++) {
-			playerDeal(player, deck);
-			System.out.println("Player total: " + player.getPlayerTotal());
-			dealerDeal(dealer, deck);
-			System.out.println("Dealer total: " + dealer.getDealerTotal());
-			
-		}
-		
-		
+		//System.out.println("New Deck : \n" + player.hand.newCards.toString() + "\n");
+//		for (int i = 0; i < 2; i++) {
+//			System.out.println(i + " Iteration: " + playerDeal());
+//			System.out.println("Player total: " + player.getPlayerTotal() + "\n");
+//			System.out.println(dealerDeal());
+//			System.out.println("Dealer total: " + dealer.getDealerTotal() + "\n");
+//			
+//		} 
+
 		
 		
 		//3) winOrLose
@@ -45,31 +59,23 @@ public class GameManager {
 			//Restart the game with a certain amount.
 	}
 	
-	public static void playerDeal(Player player, Deck deck) {
-		player.addPlayerCard();
+
+	public void startGame() {
+		playerDeal();
+		dealerDeal();
+		playerDeal();
+		dealerDeal();
+	}
+
 	
+	public void playerDeal() {
+		  player.addPlayerCard(deck.draw());
 	}
 	
-	public static void dealerDeal(Dealer dealer, Deck deck) {
-		dealer.addDealerCard();
-	}
-	
-	public static void winOrLose(Player player, Dealer dealer, Deck deck) {
-		//Blackjack
-		if (player.getPlayerTotal() == 21) {
-			//Return a YOU WIN BOX
-			//Return original bet + earnings + half earnings
-			//Restart game with new amount
-		} else if (dealer.getDealerTotal() == 21) {
-			//Return a YOU LOSE BOX
-			//Restart game with new amount
-		}
-		//Bust
-	}
-	
-	public static void hit() {
+	public void dealerDeal() {
+		  dealer.addDealerCard(deck.draw());
 		
 	}
 	
-	
+
 }
