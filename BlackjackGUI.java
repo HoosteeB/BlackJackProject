@@ -5,148 +5,255 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Stack;
 
 
 public class BlackjackGUI extends JPanel {
 	public static final int FRAME_WIDTH = 800;
 	public static final int FRAME_HEIGHT = 600;
-	
+
 	public GameManager game;
-	
+
+	JPanel north;
+	JPanel south;
+	JPanel center;
+	JFrame frame;
+
 	public BlackjackGUI(GameManager game) {
 		this.game = game;
-	
-			try {
-				JFrame frame = new JFrame("Blackjack");
-				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				frame.setSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
-				frame.setTitle("Blackjack");
-				frame.setLocationRelativeTo(null);
 
-				///////////////////////////////////////////////////////////////////////////////////
-				// get a screen size and put a frame on the center of screen
-				Dimension screenSize = new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
-				frame.setLocation(new Point((int) (screenSize.width / 2.0), (int) (screenSize.height / 2.0)));
-				///////////////////////////////////////////////////////////////////////////////////
+			frame = new JFrame("Blackjack");
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.setSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+			frame.setTitle("Blackjack");
+			frame.setLocationRelativeTo(null);
 
-
-				//JPanels for Border Layout
-				frame.setLayout(new BorderLayout());
-				JPanel north = new JPanel(new FlowLayout());
-				JPanel south = new JPanel(new FlowLayout());
-				JPanel center = new JPanel(new FlowLayout());
-
-				
-				///////////////////////////////////////////////////////////////////////////////////////
-				//Dimension sizes and background colors
-				
-				
-				north.setPreferredSize(new Dimension (40,250));
-				north.setBackground(new Color(0,153,0));
-
-				center.setBackground(new Color(0,153,0));
-
-				south.setPreferredSize(new Dimension (40,45));
-				south.setBackground(new Color(0,100,0));
-
-				
-				////////////////////////////////////////////////////////////////////////////////////////
-				//Center Panel or Player's Panel
+			///////////////////////////////////////////////////////////////////////////////////
+			// get a screen size and put a frame on the center of screen
+			Dimension screenSize = new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
+			frame.setLocation(new Point((int) (screenSize.width / 2.0), (int) (screenSize.height / 2.0)));
+			///////////////////////////////////////////////////////////////////////////////////
 
 
+			//JPanels for Border Layout
+			frame.setLayout(new BorderLayout());
+			north = new JPanel(new FlowLayout());
+			south = new JPanel(new FlowLayout());
+			center = new JPanel(new FlowLayout());
+
+
+			///////////////////////////////////////////////////////////////////////////////////////
+			//Dimension sizes and background colors
+
+
+			north.setPreferredSize(new Dimension (40,250));
+			north.setBackground(new Color(0,153,0));
+
+			center.setBackground(new Color(0,153,0));
+
+			south.setPreferredSize(new Dimension (40,45));
+			south.setBackground(new Color(0,100,0));
+
+
+			////////////////////////////////////////////////////////////////////////////////////////
+			//Center Panel or Player's Panel
+
+
+			//				for(int i = 0; i < 2 ; i++) {
+			//					BufferedImage dealerImage = ImageIO.read(new File(game.player.addPlayerCard().getPath()));
+			//					JLabel dealerPic = new JLabel(new ImageIcon(dealerImage));
+			//					
+			//					dealerCardPlacement.add(dealerPic);
+			//					north.add(dealerPic);
+			//					
+			//					north.add(dealerCardPlacement.pop());
+			//					
+			//					BufferedImage playerImage = ImageIO.read(new File(game.));
+			//					JLabel playerPic = new JLabel(new ImageIcon(playerImage));
+			//					
+			//					playerCardPlacement.add(playerPic);
+			//					
+			//					
+			//					center.add(playerCardPlacement.pop());
+			//				}
+
+			// Display dealer cards
+
+			// Display player cards
+
+
+
+
+
+
+
+
+			//////////////////////////////////////////////////////////////////////////////////////
+			//North Panel or Dealer's Panel
+			updateTable();
+			checkBlackjack();
+
+
+
+			////////////////////////////////////////////////////////////////////////////////////////
+			//South Panel
+
+
+			JButton hitBtn = new JButton();
+			hitBtn.setFont(new Font("Plain", Font.BOLD, 20));
+			hitBtn.setText("Hit");
+			hitBtn.setBackground(Color.WHITE);
+			hitBtn.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					game.playerDeal();
+					updateTable();
+					Bust();
+					
+					
+					
+				} } ); 
+
+			JButton doubleBtn = new JButton();
+			doubleBtn.setFont(new Font("Plain", Font.BOLD, 20));
+			doubleBtn.setText("Double");
+			doubleBtn.setBackground(Color.WHITE);
+			doubleBtn.addActionListener(new ActionListener() {
+
+				public void actionPerformed(ActionEvent e) {
+					//doubleProcess();
+				} } );
+
+			JButton standBtn = new JButton();
+			standBtn.setFont(new Font("Plain", Font.BOLD, 20));
+			standBtn.setText("Stand");
+			standBtn.setBackground(Color.WHITE);
+			standBtn.addActionListener(new ActionListener() {
+
+				public void actionPerformed(ActionEvent e) {
+					game.dealer.dealersTurn();
+					updateTable();
+					winOrLose();
+				    endGame();
+				} } );
+
+			south.add(hitBtn);
+			south.add(doubleBtn);
+			south.add(standBtn);
+
+			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			//Adding all the changes to the panel to the frame
 			
-				BufferedImage img3 = ImageIO.read(new File("AceOfSpades.png"));
-				JLabel pic3 = new JLabel(new ImageIcon(img3));
+			
+			frame.add(south, BorderLayout.SOUTH);
+			frame.add(center, BorderLayout.CENTER);
+			frame.add(north, BorderLayout.NORTH);
 
-				
-				BufferedImage img4 = ImageIO.read(new File("4OfHearts.png"));
-				JLabel pic4 = new JLabel(new ImageIcon(img4));
-				
-		
-				
-				center.add(pic4);
-				center.add(pic3);
-				
-				
-
-				//////////////////////////////////////////////////////////////////////////////////////
-				//North Panel or Dealer's Panel
-
-
-				
-				BufferedImage img = ImageIO.read(new File("BacksideOfCard.png"));
-				JLabel pic = new JLabel(new ImageIcon(img));
-				
-				
-				BufferedImage img2 = ImageIO.read(new File("2OfDiamonds.png"));
-				JLabel pic2 = new JLabel(new ImageIcon(img2));
-				
-				//int dealerTotal = 21;
-				//pic is put right of the pic2
-				north.add(pic2);
-				north.add(pic);
-
-
-				////////////////////////////////////////////////////////////////////////////////////////
-				//South Panel
-
-
-				JButton hitBtn = new JButton();
-				hitBtn.setFont(new Font("Plain", Font.BOLD, 20));
-				hitBtn.setText("Hit");
-				hitBtn.setBackground(Color.WHITE);
-				hitBtn.addActionListener(new ActionListener() {
+			frame.setVisible(true);
 	
-					public void actionPerformed(ActionEvent e) {
-						//hitProcess();
-					} } ); 
-
-				JButton doubleBtn = new JButton();
-				doubleBtn.setFont(new Font("Plain", Font.BOLD, 20));
-				doubleBtn.setText("Double");
-				doubleBtn.setBackground(Color.WHITE);
-				doubleBtn.addActionListener(new ActionListener() {
+			}
+	public void updateTable() {
+		for(int i = game.dealer.hand.getCards().size()-1; i >= 0 ; i--) {
+			if (i == 0) {
+				
+				try {
+					BufferedImage dealerImage = ImageIO.read(new File("images/BacksideOfCard.png"));
+					JLabel dealerPic = new JLabel(new ImageIcon(dealerImage));
+					north.add(dealerPic);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			} else {
+				ArrayList<Card> cards = game.dealer.hand.getCards();
+				try {
+					BufferedImage dealerImage = ImageIO.read(new File(cards.get(i).getPath()));
+					JLabel dealerPic = new JLabel(new ImageIcon(dealerImage));
+					north.add(dealerPic);
 					
-					public void actionPerformed(ActionEvent e) {
-						//doubleProcess();
-					} } );
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+		}
 
-				JButton standBtn = new JButton();
-				standBtn.setFont(new Font("Plain", Font.BOLD, 20));
-				standBtn.setText("Stand");
-				standBtn.setBackground(Color.WHITE);
-				standBtn.addActionListener(new ActionListener() {
-					
-					public void actionPerformed(ActionEvent e) {
-						
-					} } );
-
-				south.add(hitBtn);
-				south.add(doubleBtn);
-				south.add(standBtn);
-
-				/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-				//Adding all the changes to the panel to the frame
-				frame.add(north, BorderLayout.NORTH);
-				frame.add(center, BorderLayout.CENTER);
-				frame.add(south, BorderLayout.SOUTH);
+		for(Card d : game.player.hand.getCards()) {
+			
+			try {
+				BufferedImage playerImage = ImageIO.read(new File(d.getPath()));
+				JLabel playerPic = new JLabel(new ImageIcon(playerImage));
+				center.add(playerPic);
 				
-				
-				frame.setVisible(true);
-				
-			} 
-			catch (IOException e) {
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			
+		}
+		
+	}
+
+	public  void exit() {
+		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 	}
 	
+	public void endGame() {
+		
+		GameManager newGame = new GameManager();
+		new BlackjackGUI(newGame);
+		exit();
+	}
+	public void checkBlackjack() {
+		if(game.player.getPlayerTotal() == 21) {
+			System.out.println("Player has instant blackjack");
+		}else if (game.dealer.getDealerTotal() == 21) {
+			System.out.println("Dealer has instant blackjack");
+		}
+	}
 	
-
-
+	public void Bust() {
+		int total = game.player.getPlayerTotal();
+		int newTotal = 0;
+		if (game.player.getPlayerTotal() > 22 && game.player.getPlayerTotal() < 31 && game.player.hand.contains(FaceValue.ace)) {
+			
+			newTotal = total - 10;
+			
+		} else if (game.player.getPlayerTotal() < 22 ) {
+			System.out.println("Current Total:" + game.player.getPlayerTotal());
+		}
+		else {
+			System.out.println("You Busted you fucking idiot");
+			endGame();
+			
+		}
+		//return newTotal;
+	}
 	
-
+	public void winOrLose() {
+		//Blackjack
+		if (game.player.getPlayerTotal() == 21) {
+			System.out.println("Player has 21! Congrats!");
+			//Return a YOU WIN BOX
+			//Return original bet + earnings + half earnings
+			//Restart game with new amount
+		} else if (game.dealer.getDealerTotal() == 21) {
+			System.out.println("Dealer has BlackJack! Congrats!");
+			//Return a YOU LOSE BOX
+			//Restart game with new amount
+		} else if (game.player.getPlayerTotal() == game.dealer.getDealerTotal()) {
+			System.out.println("PUSH");
+		} else if (game.player.getPlayerTotal() > game.dealer.getDealerTotal() && game.player.getPlayerTotal() < 22) {
+			System.out.println("Player Wins!! Player has: " + game.player.getPlayerTotal() + ". Dealer has " + game.dealer.getDealerTotal());
+		} else if (game.player.getPlayerTotal() < game.dealer.getDealerTotal() && game.dealer.getDealerTotal() < 22) {
+			System.out.println("Dealer Wins!! Dealer has: " + game.dealer.getDealerTotal() + ". Player has " + game.player.getPlayerTotal());
+		} else if (game.dealer.getDealerTotal() < 21) {
+			System.out.println("Dealer Bust: " + game.dealer.getDealerTotal());
+		}
+		//Bust
+	}
+	
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
+
 	}
 
 }
