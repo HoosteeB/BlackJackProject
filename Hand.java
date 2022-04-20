@@ -4,11 +4,8 @@ public class Hand {
 	
 	ArrayList<Card> hand = new ArrayList<Card>();
 	
-	Deck newCards = new Deck();
-
-	public void addCard() {
-		 hand.add(newCards.draw());
-		
+	public void addCard(Card c) {
+		 hand.add(c);	
 	}
 
 	public int getTotal() {
@@ -27,5 +24,13 @@ public class Hand {
 			}
 		} 
 		return false;
+	}
+	
+	public ArrayList<Card> getCards() {
+		return hand;
+	}
+	
+	public String toString() {
+		return hand + "";
 	}
 }  
