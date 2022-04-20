@@ -6,7 +6,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Stack;
 
 
 public class BlackjackGUI extends JPanel {
@@ -106,12 +105,15 @@ public class BlackjackGUI extends JPanel {
 			hitBtn.setBackground(Color.WHITE);
 			hitBtn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					north.removeAll();
+					center.removeAll();
 					game.playerDeal();
 					updateTable();
-					Bust();
-					
-					
-					
+					if (Bust()) {
+						game.dealer.dealersTurn();
+						updateTable();
+						winOrLose();
+					}
 				} } ); 
 
 			JButton doubleBtn = new JButton();
@@ -134,7 +136,7 @@ public class BlackjackGUI extends JPanel {
 					game.dealer.dealersTurn();
 					updateTable();
 					winOrLose();
-				    endGame();
+				    
 				} } );
 
 			south.add(hitBtn);
@@ -200,7 +202,6 @@ public class BlackjackGUI extends JPanel {
 		
 		GameManager newGame = new GameManager();
 		new BlackjackGUI(newGame);
-		exit();
 	}
 	public void checkBlackjack() {
 		if(game.player.getPlayerTotal() == 21) {
@@ -209,20 +210,27 @@ public class BlackjackGUI extends JPanel {
 			System.out.println("Dealer has instant blackjack");
 		}
 	}
+
 	
-	public void Bust() {
-		int total = game.player.getPlayerTotal();
-		int newTotal = 0;
-		if (game.player.getPlayerTotal() > 22 && game.player.getPlayerTotal() < 31 && game.player.hand.contains(FaceValue.ace)) {
-			
-			newTotal = total - 10;
-			
+	public boolean Bust() {
+		if (game.player.getPlayerTotal() > 21 && game.player.hand.contains(FaceValue.ace)) {
+			for(Card c : game.player.hand.hand) {
+				if (c.getValue() == 11) {
+					c.changeAceValue(c);
+				}
+			} if (game.player.getPlayerTotal() > 22) {
+				System.out.println("You Busted you fucking idiot. Player bust total: " + game.player.getPlayerTotal());
+				return true;
+			}
+			System.out.println("Current Total: "+ game.player.getPlayerTotal());
+			return false;
 		} else if (game.player.getPlayerTotal() < 22 ) {
 			System.out.println("Current Total:" + game.player.getPlayerTotal());
+			return false;
 		}
 		else {
-			System.out.println("You Busted you fucking idiot");
-			endGame();
+			System.out.println("You Busted you fucking idiot. Player bust total: " + game.player.getPlayerTotal());
+			return true;
 			
 		}
 		//return newTotal;
@@ -245,10 +253,11 @@ public class BlackjackGUI extends JPanel {
 			System.out.println("Player Wins!! Player has: " + game.player.getPlayerTotal() + ". Dealer has " + game.dealer.getDealerTotal());
 		} else if (game.player.getPlayerTotal() < game.dealer.getDealerTotal() && game.dealer.getDealerTotal() < 22) {
 			System.out.println("Dealer Wins!! Dealer has: " + game.dealer.getDealerTotal() + ". Player has " + game.player.getPlayerTotal());
-		} else if (game.dealer.getDealerTotal() < 21) {
+			
+		} else if (game.dealer.getDealerTotal() > 21) {
 			System.out.println("Dealer Bust: " + game.dealer.getDealerTotal());
 		}
-		//Bust
+
 	}
 	
 	public void paintComponent(Graphics g) {
