@@ -1,4 +1,3 @@
-
 public class Card {
 
 	private Suit suit;
@@ -13,8 +12,9 @@ public class Card {
 		this.value = value;
 		this.path = path;
 	}
-
-
+	public void changeAceValue(Card c){
+		this.value = 1;
+	}
 	public int getValue() {
 		return value;
 	}
@@ -23,6 +23,7 @@ public class Card {
 		return faceValue;
 	}
 	public String getPath() {
+		System.out.println(path);
 		return path;
 	}
 	
@@ -31,7 +32,7 @@ public class Card {
 	}
 	
 	public String toString() {
-		return "[ " + suit + ", " + faceValue + ", " + value + ", " + path + "] \n";
+		return "[" + suit + ", " + faceValue + ", " + value + ", " + path + "]\n";
 	}
 	
 	
