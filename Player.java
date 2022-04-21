@@ -1,9 +1,7 @@
 public class Player {
-	
-	
-	Hand hand = new Hand();
 
 	GameManager game;
+	Hand hand = new Hand();
 	
 	public Player(GameManager game) {
 		this.game = game;
@@ -21,6 +19,4 @@ public class Player {
 	public String toString() {
 		return "player: " + hand;
 	}
-	
-	
 }

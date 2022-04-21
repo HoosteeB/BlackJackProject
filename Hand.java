@@ -16,8 +16,17 @@ public class Hand {
 		return sum;
 	}
 	
+	public boolean tryToMutateAce() {
+		for (Card c : hand) {
+			if (c.getValue() == 11) {
+				c.changeAceValue(c);
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public boolean contains(FaceValue faceValue) {
-		// TODO Auto-generated method stub
 		for (Card c : hand) {
 			if (c.getFaceValue() == faceValue) {
 				return true;

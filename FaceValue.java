@@ -1,5 +1,5 @@
 
-public enum Pip {
+public enum FaceValue{
 	two,
 	three,
 	four,
