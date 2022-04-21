@@ -1,268 +1,242 @@
 import java.awt.*;
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
-
-public class BlackjackGUI extends JPanel {
+public class BlackjackGUI {
 	public static final int FRAME_WIDTH = 800;
 	public static final int FRAME_HEIGHT = 600;
 
-	public GameManager game;
-
-	JPanel north;
-	JPanel south;
-	JPanel center;
+	GameManager game;
 	JFrame frame;
+	JPanel mainPanel;
+	JPanel gamePanel;
+	GridLayout playerGrid;
+	GridLayout dealerGrid;
 
 	public BlackjackGUI(GameManager game) {
 		this.game = game;
 
-			frame = new JFrame("Blackjack");
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
-			frame.setTitle("Blackjack");
-			frame.setLocationRelativeTo(null);
+		frame = new JFrame("Blackjack");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+		frame.setTitle("Blackjack");
+		frame.setLocationRelativeTo(null);
 
-			///////////////////////////////////////////////////////////////////////////////////
-			// get a screen size and put a frame on the center of screen
-			Dimension screenSize = new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
-			frame.setLocation(new Point((int) (screenSize.width / 2.0), (int) (screenSize.height / 2.0)));
-			///////////////////////////////////////////////////////////////////////////////////
+		// main panel
+		mainPanel = new JPanel();
+		mainPanel.setLayout(new BorderLayout());
 
+		gamePanel = new JPanel();
+		gamePanel.setLayout(new GridLayout(2, 1));
+		mainPanel.add(gamePanel);
 
-			//JPanels for Border Layout
-			frame.setLayout(new BorderLayout());
-			north = new JPanel(new FlowLayout());
-			south = new JPanel(new FlowLayout());
-			center = new JPanel(new FlowLayout());
+		// controls panel
+		JPanel controlsPanel = new JPanel();
 
-
-			///////////////////////////////////////////////////////////////////////////////////////
-			//Dimension sizes and background colors
-
-
-			north.setPreferredSize(new Dimension (40,250));
-			north.setBackground(new Color(0,153,0));
-
-			center.setBackground(new Color(0,153,0));
-
-			south.setPreferredSize(new Dimension (40,45));
-			south.setBackground(new Color(0,100,0));
-
-
-			////////////////////////////////////////////////////////////////////////////////////////
-			//Center Panel or Player's Panel
-
-
-			//				for(int i = 0; i < 2 ; i++) {
-			//					BufferedImage dealerImage = ImageIO.read(new File(game.player.addPlayerCard().getPath()));
-			//					JLabel dealerPic = new JLabel(new ImageIcon(dealerImage));
-			//					
-			//					dealerCardPlacement.add(dealerPic);
-			//					north.add(dealerPic);
-			//					
-			//					north.add(dealerCardPlacement.pop());
-			//					
-			//					BufferedImage playerImage = ImageIO.read(new File(game.));
-			//					JLabel playerPic = new JLabel(new ImageIcon(playerImage));
-			//					
-			//					playerCardPlacement.add(playerPic);
-			//					
-			//					
-			//					center.add(playerCardPlacement.pop());
-			//				}
-
-			// Display dealer cards
-
-			// Display player cards
-
-
-
-
-
-
-
-
-			//////////////////////////////////////////////////////////////////////////////////////
-			//North Panel or Dealer's Panel
-			updateTable();
-			checkBlackjack();
-
-
-
-			////////////////////////////////////////////////////////////////////////////////////////
-			//South Panel
-
-
-			JButton hitBtn = new JButton();
-			hitBtn.setFont(new Font("Plain", Font.BOLD, 20));
-			hitBtn.setText("Hit");
-			hitBtn.setBackground(Color.WHITE);
-			hitBtn.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					north.removeAll();
-					center.removeAll();
-					game.playerDeal();
-					updateTable();
-					if (Bust()) {
-						game.dealer.dealersTurn();
-						updateTable();
-						winOrLose();
-					}
-				} } ); 
-
-			JButton doubleBtn = new JButton();
-			doubleBtn.setFont(new Font("Plain", Font.BOLD, 20));
-			doubleBtn.setText("Double");
-			doubleBtn.setBackground(Color.WHITE);
-			doubleBtn.addActionListener(new ActionListener() {
-
-				public void actionPerformed(ActionEvent e) {
-					//doubleProcess();
-				} } );
-
-			JButton standBtn = new JButton();
-			standBtn.setFont(new Font("Plain", Font.BOLD, 20));
-			standBtn.setText("Stand");
-			standBtn.setBackground(Color.WHITE);
-			standBtn.addActionListener(new ActionListener() {
-
-				public void actionPerformed(ActionEvent e) {
-					game.dealer.dealersTurn();
-					updateTable();
-					winOrLose();
-				    
-				} } );
-
-			south.add(hitBtn);
-			south.add(doubleBtn);
-			south.add(standBtn);
-
-			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			//Adding all the changes to the panel to the frame
-			
-			
-			frame.add(south, BorderLayout.SOUTH);
-			frame.add(center, BorderLayout.CENTER);
-			frame.add(north, BorderLayout.NORTH);
-
-			frame.setVisible(true);
-	
+		JButton hitBtn = new JButton();
+		hitBtn.setFont(new Font("Plain", Font.BOLD, 20));
+		hitBtn.setText("Hit");
+		hitBtn.setBackground(Color.WHITE);
+		hitBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				game.playerDeal();
 			}
-	public void updateTable() {
-		for(int i = game.dealer.hand.getCards().size()-1; i >= 0 ; i--) {
-			if (i == 0) {
-				
-				try {
-					BufferedImage dealerImage = ImageIO.read(new File("images/BacksideOfCard.png"));
-					JLabel dealerPic = new JLabel(new ImageIcon(dealerImage));
-					north.add(dealerPic);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			} else {
-				ArrayList<Card> cards = game.dealer.hand.getCards();
-				try {
-					BufferedImage dealerImage = ImageIO.read(new File(cards.get(i).getPath()));
-					JLabel dealerPic = new JLabel(new ImageIcon(dealerImage));
-					north.add(dealerPic);
-					
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			
-		}
+		});
+		controlsPanel.add(hitBtn);
 
-		for(Card d : game.player.hand.getCards()) {
-			
-			try {
-				BufferedImage playerImage = ImageIO.read(new File(d.getPath()));
-				JLabel playerPic = new JLabel(new ImageIcon(playerImage));
-				center.add(playerPic);
-				
-			} catch (IOException e) {
-				e.printStackTrace();
+		JButton doubleBtn = new JButton();
+		doubleBtn.setFont(new Font("Plain", Font.BOLD, 20));
+		doubleBtn.setText("Double");
+		doubleBtn.setBackground(Color.WHITE);
+		doubleBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 			}
-			
-		}
-		
+		});
+		controlsPanel.add(doubleBtn);
+
+		JButton standBtn = new JButton();
+		standBtn.setFont(new Font("Plain", Font.BOLD, 20));
+		standBtn.setText("Stand");
+		standBtn.setBackground(Color.WHITE);
+		standBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				game.dealersTurn();
+			}//
+		});
+		controlsPanel.add(standBtn);
+
+		mainPanel.add(controlsPanel, BorderLayout.SOUTH);
+
+		frame.add(mainPanel);
+		frame.setVisible(true);
 	}
 
-	public  void exit() {
+	public void redrawCards() {
+		ArrayList<Card> dealerHand = game.dealer.hand.getCards();
+		ArrayList<Card> playerHand = game.player.hand.getCards();
+
+		// clear panels
+		gamePanel.removeAll();
+
+		// draw dealer hand
+		JPanel dealerPanel = new JPanel();
+		dealerPanel.setLayout(new GridLayout(1, dealerHand.size()));
+		for (int i=0; i<dealerHand.size(); i++) {
+			if (i == dealerHand.size()-1) {
+				JLabel dealerPic = new JLabel(new ImageIcon("images/BacksideOfCard.png"));
+				dealerPic.setSize(1, 1);
+				dealerPanel.add(dealerPic);
+			} else {
+				JLabel dealerPic = new JLabel(new ImageIcon(dealerHand.get(i).getPath()));
+				dealerPanel.add(dealerPic);
+			}
+		}
+		gamePanel.add(dealerPanel);
+
+		// draw player hand
+		JPanel playerPanel = new JPanel();
+		playerPanel.setLayout(new GridLayout(1, playerHand.size()));
+		for (int i=0; i<playerHand.size(); i++) {
+			JLabel playerPic = new JLabel(new ImageIcon(playerHand.get(i).getPath()));
+			playerPanel.add(playerPic);
+		}
+		gamePanel.add(playerPanel);
+
+		frame.invalidate();
+		frame.validate();
+		frame.repaint();
+	}
+
+	public void exit() {
 		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 	}
-	
+
 	public void endGame() {
-		
 		GameManager newGame = new GameManager();
 		new BlackjackGUI(newGame);
 	}
+
 	public void checkBlackjack() {
-		if(game.player.getPlayerTotal() == 21) {
+		if (game.player.getPlayerTotal() == 21) {
 			System.out.println("Player has instant blackjack");
-		}else if (game.dealer.getDealerTotal() == 21) {
+		} else if (game.dealer.getDealerTotal() == 21) {
 			System.out.println("Dealer has instant blackjack");
 		}
 	}
 
-	
-	public boolean Bust() {
-		if (game.player.getPlayerTotal() > 21 && game.player.hand.contains(FaceValue.ace)) {
-			for(Card c : game.player.hand.hand) {
-				if (c.getValue() == 11) {
-					c.changeAceValue(c);
-				}
-			} if (game.player.getPlayerTotal() > 22) {
-				System.out.println("You Busted you fucking idiot. Player bust total: " + game.player.getPlayerTotal());
-				return true;
-			}
-			System.out.println("Current Total: "+ game.player.getPlayerTotal());
-			return false;
-		} else if (game.player.getPlayerTotal() < 22 ) {
-			System.out.println("Current Total:" + game.player.getPlayerTotal());
-			return false;
-		}
-		else {
-			System.out.println("You Busted you fucking idiot. Player bust total: " + game.player.getPlayerTotal());
-			return true;
-			
-		}
-		//return newTotal;
-	}
-	
+
+
 	public void winOrLose() {
-		//Blackjack
+		// Blackjack
 		if (game.player.getPlayerTotal() == 21) {
 			System.out.println("Player has 21! Congrats!");
-			//Return a YOU WIN BOX
-			//Return original bet + earnings + half earnings
-			//Restart game with new amount
+			// Return a YOU WIN BOX
+			// Return original bet + earnings + half earnings
+			// Restart game with new amount
 		} else if (game.dealer.getDealerTotal() == 21) {
 			System.out.println("Dealer has BlackJack! Congrats!");
-			//Return a YOU LOSE BOX
-			//Restart game with new amount
+			// Return a YOU LOSE BOX
+			// Restart game with new amount
 		} else if (game.player.getPlayerTotal() == game.dealer.getDealerTotal()) {
 			System.out.println("PUSH");
 		} else if (game.player.getPlayerTotal() > game.dealer.getDealerTotal() && game.player.getPlayerTotal() < 22) {
-			System.out.println("Player Wins!! Player has: " + game.player.getPlayerTotal() + ". Dealer has " + game.dealer.getDealerTotal());
+			System.out.println("Player Wins!! Player has: " + game.player.getPlayerTotal() + ". Dealer has "
+					+ game.dealer.getDealerTotal());
 		} else if (game.player.getPlayerTotal() < game.dealer.getDealerTotal() && game.dealer.getDealerTotal() < 22) {
-			System.out.println("Dealer Wins!! Dealer has: " + game.dealer.getDealerTotal() + ". Player has " + game.player.getPlayerTotal());
-			
+			System.out.println("Dealer Wins!! Dealer has: " + game.dealer.getDealerTotal() + ". Player has "
+					+ game.player.getPlayerTotal());
+
 		} else if (game.dealer.getDealerTotal() > 21) {
 			System.out.println("Dealer Bust: " + game.dealer.getDealerTotal());
 		}
 
 	}
-	
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
-
+	public void GameOver() {
+		System.out.println("GameOver");
+		mainPanel.removeAll();
+		frame.invalidate();
+		frame.validate();
+		frame.pack();
+		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+		frame.repaint();
+		
+		JPanel mainPanelTwo = new JPanel();
+		mainPanelTwo.setBackground(Color.black);
+		JLabel gameOver = new JLabel(new ImageIcon("images/GameOver.png"));
+		JLabel gameOver2 = new JLabel("Player Total:  " + game.player.getPlayerTotal());
+		JLabel gameOver3 = new JLabel("Dealer Total:  " + game.dealer.getDealerTotal());
+		gameOver2.setForeground(Color.RED);
+		gameOver2.setFont(new Font("Serif", Font. BOLD, 45));
+		gameOver3.setForeground(Color.RED);
+		gameOver3.setFont(new Font("Serif", Font. BOLD, 45));
+		mainPanelTwo.add(gameOver);
+		mainPanelTwo.add(gameOver2);
+		mainPanelTwo.add(gameOver3);
+		mainPanel.add(mainPanelTwo);
+		
+		frame.invalidate();
+		frame.validate();
+		frame.repaint();
+		
+		
 	}
-
+	public void winner() {
+		System.out.println("Winner");
+		mainPanel.removeAll();
+		frame.invalidate();
+		frame.validate();
+		frame.pack();
+		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+		frame.repaint();
+		
+		JPanel mainPanelTwo = new JPanel();
+		mainPanelTwo.setBackground(Color.black);
+		JLabel winner = new JLabel(new ImageIcon("images/winnner.png"));
+		JLabel winner2 = new JLabel("Player Total:  " + game.player.getPlayerTotal());
+		JLabel winner3 = new JLabel("Dealer Total:  " + game.dealer.getDealerTotal());
+		winner2.setForeground(Color.RED);
+		winner2.setFont(new Font("Serif", Font. BOLD, 45));
+		winner3.setForeground(Color.RED);
+		winner3.setFont(new Font("Serif", Font. BOLD, 45));
+		mainPanelTwo.add(winner);
+		mainPanelTwo.add(winner2);
+		mainPanelTwo.add(winner3);
+		mainPanel.add(mainPanelTwo);
+		
+		frame.invalidate();
+		frame.validate();
+		frame.repaint();
+		
+		
+	}
+	public void push() {
+		System.out.println("Push");
+		mainPanel.removeAll();
+		frame.invalidate();
+		frame.validate();
+		frame.pack();
+		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+		frame.repaint();
+		
+		JPanel mainPanelTwo = new JPanel();
+		mainPanelTwo.setBackground(Color.black);
+		JLabel push = new JLabel(new ImageIcon("images/Push.png"));
+		JLabel push2 = new JLabel("Player Total:  " + game.player.getPlayerTotal());
+		JLabel push3 = new JLabel("Dealer Total:  " + game.dealer.getDealerTotal());
+		push2.setForeground(Color.RED);
+		push2.setFont(new Font("Serif", Font. BOLD, 45));
+		push3.setForeground(Color.RED);
+		push3.setFont(new Font("Serif", Font. BOLD, 45));
+		mainPanelTwo.add(push);
+		mainPanelTwo.add(push2);
+		mainPanelTwo.add(push3);
+		mainPanel.add(mainPanelTwo);
+		
+		frame.invalidate();
+		frame.validate();
+		frame.repaint();
+		
+		
+	}
 }
