@@ -5,7 +5,6 @@ public class Dealer {
 
 	public Dealer(GameManager game) {
 		this.game = game;
-
 	}
 
 	public void addDealerCard(Card c) {
@@ -25,7 +24,7 @@ public class Dealer {
 		if (getDealerTotal() == 17 && hand.contains(FaceValue.ace)) {
 			game.dealerDeal();
 		} else if (getDealerTotal() > 16 && getDealerTotal() < 22) {
-			System.out.println("Dealers total is in between 17 and 21. Card total is " + getDealerTotal() + ".");
+			//System.out.println("Dealers total is in between 17 and 21. Card total is " + getDealerTotal() + ".");
 		} else if (getDealerTotal() > 21 && hand.contains(FaceValue.ace)) {
 			for (Card c : game.dealer.hand.hand) {
 				if (c.getValue() == 11) {
@@ -36,7 +35,6 @@ public class Dealer {
 				game.dealerDeal();
 			}
 		}
-
 	}
 
 	public String toString() {
