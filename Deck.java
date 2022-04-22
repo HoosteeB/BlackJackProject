@@ -32,7 +32,7 @@ public class Deck {
 	Card eight_diamonds = new Card(Suit.diamonds, FaceValue.eight, 8, "images/8OfDiamonds.png");
 	Card nine_diamonds = new Card(Suit.diamonds, FaceValue.nine, 9, "images/9OfDiamonds.png");
 	Card ten_diamonds = new Card(Suit.diamonds, FaceValue.ten, 10, "images/10OfDiamonds.png");
-	Card jack_diamonds = new Card(Suit.diamonds, FaceValue.jack, 10, "images/JackfDiamonds.png");
+	Card jack_diamonds = new Card(Suit.diamonds, FaceValue.jack, 10, "images/JackOfDiamonds.png");
 	Card queen_diamonds = new Card(Suit.diamonds, FaceValue.queen, 10, "images/QueenOfDiamonds.png");
 	Card king_diamonds = new Card(Suit.diamonds, FaceValue.king, 10, "images/KingOfDiamonds.png");
 	Card ace_diamonds = new Card(Suit.diamonds, FaceValue.ace, 11, "images/AceOfDiamonds.png");
