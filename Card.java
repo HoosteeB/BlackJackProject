@@ -5,7 +5,6 @@ public class Card {
 	private int value;
 	private String path;
 
-
 	public Card(Suit suit, FaceValue faceValue, int value, String path) {
 		this.suit = suit;
 		this.faceValue = faceValue;
@@ -23,7 +22,6 @@ public class Card {
 		return faceValue;
 	}
 	public String getPath() {
-		System.out.println(path);
 		return path;
 	}
 	
@@ -33,8 +31,5 @@ public class Card {
 	
 	public String toString() {
 		return "[" + suit + ", " + faceValue + ", " + value + ", " + path + "]\n";
-	}
-	
-	
-			
+	}			
 }
