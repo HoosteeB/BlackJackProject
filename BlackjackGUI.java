@@ -13,6 +13,9 @@ public class BlackjackGUI {
 	JPanel gamePanel;
 	GridLayout playerGrid;
 	GridLayout dealerGrid;
+	JButton standBtn;
+	JButton doubleBtn;
+	JButton hitBtn;
 
 	public BlackjackGUI(GameManager game) {
 		this.game = game;
@@ -26,41 +29,63 @@ public class BlackjackGUI {
 		// main panel
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new BorderLayout());
+		mainPanel.setBackground(new Color(0,153,0));
 
 		gamePanel = new JPanel();
 		gamePanel.setLayout(new GridLayout(2, 1));
+		gamePanel.setBackground(new Color(0,153,0));
 		mainPanel.add(gamePanel);
 
 		// controls panel
 		JPanel controlsPanel = new JPanel();
 
-		JButton hitBtn = new JButton();
+		hitBtn = new JButton();
 		hitBtn.setFont(new Font("Plain", Font.BOLD, 20));
 		hitBtn.setText("Hit");
 		hitBtn.setBackground(Color.WHITE);
 		hitBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				game.playerDeal();
+				
 			}
 		});
 		controlsPanel.add(hitBtn);
 
-		JButton doubleBtn = new JButton();
+		doubleBtn = new JButton();
 		doubleBtn.setFont(new Font("Plain", Font.BOLD, 20));
 		doubleBtn.setText("Double");
 		doubleBtn.setBackground(Color.WHITE);
 		doubleBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				game.playerDeal();
+				flipDealerCard();
+				
+				doubleBtn.setEnabled(false);
+				hitBtn.setEnabled(false);
+				standBtn.setEnabled(false);
+				
+				game.dealersTurn();	
+				
+				
+				//controlsPanel.removeAll();
 			}
 		});
 		controlsPanel.add(doubleBtn);
 
-		JButton standBtn = new JButton();
+		standBtn = new JButton();
 		standBtn.setFont(new Font("Plain", Font.BOLD, 20));
 		standBtn.setText("Stand");
 		standBtn.setBackground(Color.WHITE);
 		standBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				checkBlackjack();
+				flipDealerCard();
+				
+				standBtn.setEnabled(false);
+				doubleBtn.setEnabled(false);
+				hitBtn.setEnabled(false);
+				
 				game.dealersTurn();
 			}//
 		});
@@ -71,7 +96,41 @@ public class BlackjackGUI {
 		frame.add(mainPanel);
 		frame.setVisible(true);
 	}
+	
+	public void disableButtons() {
+		
+	}
+	public void flipDealerCard() {
+		ArrayList<Card> dealerHand = game.dealer.hand.getCards();
+		ArrayList<Card> playerHand = game.player.hand.getCards();
 
+		// clear panels
+		gamePanel.removeAll();
+
+		// draw dealer hand
+		JPanel dealerPanel = new JPanel();
+		dealerPanel.setLayout(new GridLayout(1, dealerHand.size()));
+		dealerPanel.setBackground(new Color(0,153,0));
+		for (int i=0; i<dealerHand.size(); i++) {
+				JLabel dealerPic = new JLabel(new ImageIcon(dealerHand.get(i).getPath()));
+				dealerPanel.add(dealerPic);
+		}
+		gamePanel.add(dealerPanel);
+
+		// draw player hand
+		JPanel playerPanel = new JPanel();
+		playerPanel.setLayout(new GridLayout(1, playerHand.size()));
+		playerPanel.setBackground(new Color(0,153,0));
+		for (int i=0; i<playerHand.size(); i++) {
+			JLabel playerPic = new JLabel(new ImageIcon(playerHand.get(i).getPath()));
+			playerPanel.add(playerPic);
+		}
+		gamePanel.add(playerPanel);
+
+		frame.invalidate();
+		frame.validate();
+		frame.repaint();
+	}
 	public void redrawCards() {
 		ArrayList<Card> dealerHand = game.dealer.hand.getCards();
 		ArrayList<Card> playerHand = game.player.hand.getCards();
@@ -82,6 +141,7 @@ public class BlackjackGUI {
 		// draw dealer hand
 		JPanel dealerPanel = new JPanel();
 		dealerPanel.setLayout(new GridLayout(1, dealerHand.size()));
+		dealerPanel.setBackground(new Color(0,153,0));
 		for (int i=0; i<dealerHand.size(); i++) {
 			if (i == dealerHand.size()-1) {
 				JLabel dealerPic = new JLabel(new ImageIcon("images/BacksideOfCard.png"));
@@ -97,6 +157,7 @@ public class BlackjackGUI {
 		// draw player hand
 		JPanel playerPanel = new JPanel();
 		playerPanel.setLayout(new GridLayout(1, playerHand.size()));
+		playerPanel.setBackground(new Color(0,153,0));
 		for (int i=0; i<playerHand.size(); i++) {
 			JLabel playerPic = new JLabel(new ImageIcon(playerHand.get(i).getPath()));
 			playerPanel.add(playerPic);
@@ -126,7 +187,46 @@ public class BlackjackGUI {
 	}
 
 
-
+	public void startingBet(){
+		mainPanel.removeAll();
+		frame.invalidate();
+		frame.validate();
+		frame.pack();
+		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+		frame.repaint();
+		
+		JPanel betPanel = new JPanel();
+		betPanel.setLayout(new BorderLayout());
+		betPanel.setBackground(Color.GREEN);
+		
+		JPanel betNorth = new JPanel();
+		JPanel betNorthWest = new JPanel();
+		JPanel betNorthEast = new JPanel();
+		betNorth.setLayout(new FlowLayout());
+		JLabel bet = new JLabel("Bet:  ");
+		JLabel pot = new JLabel("Pot:  "/*+ currentAmoutn*/);
+		betNorth.add(bet);
+		JTextField input = new JTextField("What would you like your bet to be?  ");
+		betNorth.add(input);
+		String betAmountString = input.getText();
+		int betAmount = Integer.parseInt(betAmountString);
+		System.out.println(getBet(betAmount));
+		
+		JPanel betSouth = new JPanel();
+		betSouth.add(pot);
+		betPanel.add(betNorth,BorderLayout.NORTH);
+		betPanel.add(betSouth,BorderLayout.SOUTH);
+		betNorth.add(betNorthWest,betNorthEast);
+		mainPanel.add(betPanel);
+		
+		frame.invalidate();
+		frame.validate();
+		frame.repaint();
+		}
+	public int getBet(int betAmount) {
+		int betAmount1 = betAmount;
+		return betAmount1;
+	}
 	public void winOrLose() {
 		// Blackjack
 		if (game.player.getPlayerTotal() == 21) {
@@ -152,6 +252,7 @@ public class BlackjackGUI {
 		}
 
 	}
+
 	public void GameOver() {
 		System.out.println("GameOver");
 		mainPanel.removeAll();
@@ -164,7 +265,7 @@ public class BlackjackGUI {
 		JPanel mainPanelTwo = new JPanel();
 		mainPanelTwo.setBackground(Color.black);
 		JLabel gameOver = new JLabel(new ImageIcon("images/GameOver.png"));
-		JLabel gameOver2 = new JLabel("Player Total:  " + game.player.getPlayerTotal());
+		JLabel gameOver2 = new JLabel("Player Total:  " + game.player.getPlayerTotal() + "   ");
 		JLabel gameOver3 = new JLabel("Dealer Total:  " + game.dealer.getDealerTotal());
 		gameOver2.setForeground(Color.RED);
 		gameOver2.setFont(new Font("Serif", Font. BOLD, 45));
