@@ -1,7 +1,6 @@
-
 public class GameMain {
 	public static void main(String[] args) {
-		GameManager game = new GameManager();
-		
+		int initialMoney = 1000;
+		GameManager game = new GameManager(initialMoney);		
 	}
 }

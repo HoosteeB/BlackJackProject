@@ -1,12 +1,15 @@
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
+import java.util.Timer;
 import java.util.ArrayList;
 
 public class BlackjackGUI {
 	public static final int FRAME_WIDTH = 800;
 	public static final int FRAME_HEIGHT = 600;
-
+	
+	Timer time = new Timer();
+	
 	GameManager game;
 	JFrame frame;
 	JPanel mainPanel;
@@ -16,10 +19,16 @@ public class BlackjackGUI {
 	JButton standBtn;
 	JButton doubleBtn;
 	JButton hitBtn;
-
-	public BlackjackGUI(GameManager game) {
+	JButton enterBet;
+	
+	int currentAmount;
+	int betAmount;
+	int newAmount;
+	
+	public BlackjackGUI(GameManager game, int currentMoney) {
 		this.game = game;
-
+		this.currentAmount = currentMoney;
+		
 		frame = new JFrame("Blackjack");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
@@ -30,13 +39,97 @@ public class BlackjackGUI {
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new BorderLayout());
 		mainPanel.setBackground(new Color(0,153,0));
+		
+		JPanel betPanel = new JPanel();
+		betPanel.setLayout(new BorderLayout());
+		betPanel.setBackground(Color.GREEN);
+
+		JPanel betNorth = new JPanel();
+		betNorth.setLayout(new FlowLayout());
+		betNorth.setBackground(Color.GREEN);
+		
+		
+		JLabel bet = new JLabel("Bet:  $");
+		betNorth.add(bet);
+		
+		JTextField input = new JTextField(16);
+		betNorth.add(input);
+		
+		JButton enterBet = new JButton();
+		enterBet.setText("Enter");
+		enterBet.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {	
+				
+				String betAmountString = input.getText();
+				String replacedCharacters = betAmountString.replaceAll("[^\\p{IsDigit}]","");
+				betAmount = Integer.parseInt(replacedCharacters);
+				if(currentAmount == 0 && betAmount == 0) {
+					kickedOut();
+				} else if (currentAmount < betAmount) {
+					JOptionPane.showMessageDialog(null, "Please enter a valid number.");
+				} else {
+					newAmount = currentAmount - betAmount;
+					blackjackTable();
+					game.startGame();
+				}
+				
+				
+			}
+		});
+		betNorth.add(enterBet);
+		
+		JPanel betSouth = new JPanel();
+		betSouth.setBackground(Color.GREEN);
+		
+		JLabel pot = new JLabel("Current Amount:  $" + currentMoney);
+		betSouth.add(pot);
+		
+		JPanel center = new JPanel();
+		center.setBackground(Color.GREEN);
+		JLabel welcomeText = new JLabel("Welcome to BlackJack");
+		
+		welcomeText.setFont(new Font("Serif", Font. BOLD, 20));
+		
+		center.add(welcomeText);
+		
+
+		betPanel.add(betNorth, BorderLayout.NORTH);
+		betPanel.add(betSouth, BorderLayout.SOUTH);
+		betPanel.add(center, BorderLayout.CENTER);
+		
+		mainPanel.add(betPanel);
+		frame.add(mainPanel);
+		frame.setVisible(true);
+	}
+	
+	public void kickedOut() {
+		mainPanel.removeAll();
+		frame.pack();
+		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+		mainPanel = new JPanel();
+		mainPanel.setLayout(new BorderLayout());
+		
+		JLabel kickedOut = new JLabel(new ImageIcon("images/KickedOut.png"));
+		time.schedule(game.kickedOut, 5000);
+		mainPanel.add(kickedOut, BorderLayout.CENTER);
+		frame.add(mainPanel);
+		
+		frame.invalidate();
+		frame.validate();
+		frame.repaint();
+	}
+	
+	public void blackjackTable() {
+		System.out.println("Player Blackjack");
+		mainPanel.removeAll();
+		frame.pack();
+		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 
 		gamePanel = new JPanel();
 		gamePanel.setLayout(new GridLayout(2, 1));
 		gamePanel.setBackground(new Color(0,153,0));
 		mainPanel.add(gamePanel);
-
-		// controls panel
+		
 		JPanel controlsPanel = new JPanel();
 
 		hitBtn = new JButton();
@@ -46,7 +139,6 @@ public class BlackjackGUI {
 		hitBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				game.playerDeal();
-				
 			}
 		});
 		controlsPanel.add(hitBtn);
@@ -57,18 +149,15 @@ public class BlackjackGUI {
 		doubleBtn.setBackground(Color.WHITE);
 		doubleBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				game.playerDeal();
-				flipDealerCard();
-				
-				doubleBtn.setEnabled(false);
-				hitBtn.setEnabled(false);
-				standBtn.setEnabled(false);
-				
-				game.dealersTurn();	
-				
-				
-				//controlsPanel.removeAll();
+				if(currentAmount > (betAmount * 2)) {
+					newAmount = currentAmount - (betAmount * 2);
+					
+					disableButtons();
+					game.playerDeal();
+					flipDealerCard();
+					game.dealersTurn();
+				} else JOptionPane.showMessageDialog(null, "You cannot double. Doubling will exceed your current amount of $" + currentAmount +".");
+					
 			}
 		});
 		controlsPanel.add(doubleBtn);
@@ -79,27 +168,282 @@ public class BlackjackGUI {
 		standBtn.setBackground(Color.WHITE);
 		standBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				checkBlackjack();
 				flipDealerCard();
-				
-				standBtn.setEnabled(false);
-				doubleBtn.setEnabled(false);
-				hitBtn.setEnabled(false);
-				
+				disableButtons();
 				game.dealersTurn();
-			}//
+			}
 		});
 		controlsPanel.add(standBtn);
 
 		mainPanel.add(controlsPanel, BorderLayout.SOUTH);
-
+		
 		frame.add(mainPanel);
-		frame.setVisible(true);
+		
+		frame.invalidate();
+		frame.validate();
+		frame.repaint();
+	}
+	public void playerBlackjack() {
+		System.out.println("Player Blackjack");
+		mainPanel.removeAll();
+		frame.pack();
+		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+
+
+		JPanel mainPanelTwo = new JPanel();
+		mainPanelTwo.setLayout(new BorderLayout());
+		
+		
+		JPanel north = new JPanel();
+		JPanel center = new JPanel();
+		JPanel south = new JPanel();
+		
+		JLabel winner = new JLabel(new ImageIcon("images/winnner.png"));
+		JLabel winner2 = new JLabel("Player Total:  " + game.player.getPlayerTotal() + "	");
+		JLabel winner3 = new JLabel("Dealer Total:  " + game.dealer.getDealerTotal());
+		
+		winner2.setForeground(Color.RED);
+		winner2.setFont(new Font("Serif", Font.BOLD, 45));
+		winner3.setForeground(Color.RED);
+		winner3.setFont(new Font("Serif", Font.BOLD, 45));
+		
+		center.add(winner);
+		north.add(winner2);
+		north.add(winner3);
+		
+		JButton continueGame = new JButton();
+		continueGame.setText("Continue");
+		continueGame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				exit();
+				new GameManager(currentAmount + (betAmount + (betAmount/2)));
+			}
+		});
+		
+		JButton exitGame = new JButton();
+		exitGame.setText("Exit");
+		exitGame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				exit();
+			}
+		});
+		
+		south.setBackground(Color.BLACK);
+		south.add(continueGame);
+		south.add(exitGame);
+		
+		mainPanelTwo.add(north, BorderLayout.NORTH);
+		mainPanelTwo.add(center, BorderLayout.CENTER);
+		mainPanelTwo.add(south, BorderLayout.SOUTH);
+		
+		mainPanel.add(mainPanelTwo);
+
+		frame.invalidate();
+		frame.validate();
+		frame.repaint();
+
 	}
 	
-	public void disableButtons() {
+	public void loserScreen() {
+		System.out.println("Loser Screen");
+		mainPanel.removeAll();
+		frame.pack();
+		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+
+
+		JPanel mainPanelTwo = new JPanel();
+		mainPanelTwo.setLayout(new BorderLayout());
 		
+		
+		JPanel north = new JPanel();
+		JPanel center = new JPanel();
+		JPanel south = new JPanel();
+		
+		JLabel gameOver = new JLabel(new ImageIcon("images/GameOver.png"));
+		JLabel gameOver2 = new JLabel("Player Total:  " + game.player.getPlayerTotal() + "   ");
+		JLabel gameOver3 = new JLabel("Dealer Total:  " + game.dealer.getDealerTotal());
+		
+		
+		gameOver2.setForeground(Color.RED);
+		gameOver2.setFont(new Font("Serif", Font.BOLD, 45));
+		gameOver3.setForeground(Color.RED);
+		gameOver3.setFont(new Font("Serif", Font.BOLD, 45));
+		
+		north.setBackground(Color.BLACK);
+		center.setBackground(Color.BLACK);
+		
+		center.add(gameOver);
+		north.add(gameOver2);
+		north.add(gameOver3);
+		
+		
+		JButton continueGame = new JButton();
+		continueGame.setText("Continue");
+		continueGame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				exit();
+				new GameManager(newAmount);
+			}
+		});
+		
+		JButton exitGame = new JButton();
+		exitGame.setText("Exit");
+		exitGame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				exit();
+			}
+		});
+		
+		south.setBackground(Color.BLACK);
+		south.add(continueGame);
+		south.add(exitGame);
+		
+		mainPanelTwo.add(north, BorderLayout.NORTH);
+		mainPanelTwo.add(center, BorderLayout.CENTER);
+		mainPanelTwo.add(south, BorderLayout.SOUTH);
+		
+		
+		mainPanel.add(mainPanelTwo);
+
+		frame.invalidate();
+		frame.validate();
+		frame.repaint();
+		System.out.println(newAmount);
+
 	}
+
+	public void winner() {
+		System.out.println("Winner");
+		mainPanel.removeAll();
+		frame.pack();
+		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+
+
+		JPanel mainPanelTwo = new JPanel();
+		mainPanelTwo.setLayout(new BorderLayout());
+		
+		
+		JPanel north = new JPanel();
+		JPanel center = new JPanel();
+		JPanel south = new JPanel();
+		
+		JLabel winner = new JLabel(new ImageIcon("images/winnner.png"));
+		JLabel winner2 = new JLabel("Player Total:  " + game.player.getPlayerTotal() + "	");
+		JLabel winner3 = new JLabel("Dealer Total:  " + game.dealer.getDealerTotal());
+		
+		winner2.setForeground(Color.RED);
+		winner2.setFont(new Font("Serif", Font.BOLD, 45));
+		winner3.setForeground(Color.RED);
+		winner3.setFont(new Font("Serif", Font.BOLD, 45));
+		
+		center.setBackground(Color.BLACK);
+		north.setBackground(Color.BLACK);
+		
+		center.add(winner);
+		north.add(winner2);
+		north.add(winner3);
+		
+		JButton continueGame = new JButton();
+		continueGame.setText("Continue");
+		continueGame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				exit();
+				new GameManager(currentAmount + betAmount);
+
+			}
+		});
+		
+		JButton exitGame = new JButton();
+		exitGame.setText("Exit");
+		exitGame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				exit();
+			}
+		});
+		
+		south.setBackground(Color.BLACK);
+		south.add(continueGame);
+		south.add(exitGame);
+		
+		mainPanelTwo.add(north, BorderLayout.NORTH);
+		mainPanelTwo.add(center, BorderLayout.CENTER);
+		mainPanelTwo.add(south, BorderLayout.SOUTH);
+		
+		mainPanel.add(mainPanelTwo);
+
+		frame.invalidate();
+		frame.validate();
+		frame.repaint();
+
+	}
+
+	public void push() {
+		System.out.println("Push");
+		mainPanel.removeAll();
+		frame.invalidate();
+		frame.validate();
+		frame.pack();
+		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+
+
+		JPanel mainPanelTwo = new JPanel();
+		mainPanelTwo.setLayout(new BorderLayout());
+		
+		
+		JPanel north = new JPanel();
+		JPanel center = new JPanel();
+		JPanel south = new JPanel();
+		
+		JLabel push = new JLabel(new ImageIcon("images/Push.png"));
+		JLabel push2 = new JLabel("Player Total:  " + game.player.getPlayerTotal() + "   ");
+		JLabel push3 = new JLabel("Dealer Total:  " + game.dealer.getDealerTotal());
+		
+		push2.setForeground(Color.RED);
+		push2.setFont(new Font("Serif", Font.BOLD, 45));
+		push3.setForeground(Color.RED);
+		push3.setFont(new Font("Serif", Font.BOLD, 45));
+		
+		north.setBackground(Color.BLACK);
+		center.setBackground(Color.BLACK);
+		
+		center.add(push);
+		north.add(push2);
+		north.add(push3);
+
+		
+		JButton continueGame = new JButton();
+		continueGame.setText("Continue");
+		continueGame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				exit();
+				new GameManager(currentAmount);
+			}
+		});
+		
+		JButton exitGame = new JButton();
+		exitGame.setText("Exit");
+		exitGame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				exit();
+			}
+		});
+		
+		south.setBackground(Color.BLACK);
+		south.add(continueGame);
+		south.add(exitGame);
+		
+		
+		mainPanelTwo.add(north, BorderLayout.NORTH);
+		mainPanelTwo.add(center, BorderLayout.CENTER);
+		mainPanelTwo.add(south, BorderLayout.SOUTH);
+		mainPanel.add(mainPanelTwo);
+
+		frame.invalidate();
+		frame.validate();
+		frame.repaint();
+
+	}
+	
 	public void flipDealerCard() {
 		ArrayList<Card> dealerHand = game.dealer.hand.getCards();
 		ArrayList<Card> playerHand = game.player.hand.getCards();
@@ -110,27 +454,37 @@ public class BlackjackGUI {
 		// draw dealer hand
 		JPanel dealerPanel = new JPanel();
 		dealerPanel.setLayout(new GridLayout(1, dealerHand.size()));
-		dealerPanel.setBackground(new Color(0,153,0));
-		for (int i=0; i<dealerHand.size(); i++) {
-				JLabel dealerPic = new JLabel(new ImageIcon(dealerHand.get(i).getPath()));
-				dealerPanel.add(dealerPic);
+		dealerPanel.setBackground(new Color(0, 153, 0));
+
+		JLabel dealerTotal = new JLabel("Dealer:");
+		dealerPanel.add(dealerTotal);
+
+		for (int i = 0; i < dealerHand.size(); i++) {
+			JLabel dealerPic = new JLabel(new ImageIcon(dealerHand.get(i).getPath()));
+			dealerPanel.add(dealerPic);
 		}
 		gamePanel.add(dealerPanel);
 
 		// draw player hand
 		JPanel playerPanel = new JPanel();
 		playerPanel.setLayout(new GridLayout(1, playerHand.size()));
-		playerPanel.setBackground(new Color(0,153,0));
-		for (int i=0; i<playerHand.size(); i++) {
+		playerPanel.setBackground(new Color(0, 153, 0));
+
+		JLabel playerTotal = new JLabel("Player:");
+		playerPanel.add(playerTotal);
+
+		for (int i = 0; i < playerHand.size(); i++) {
 			JLabel playerPic = new JLabel(new ImageIcon(playerHand.get(i).getPath()));
 			playerPanel.add(playerPic);
 		}
+
 		gamePanel.add(playerPanel);
 
 		frame.invalidate();
 		frame.validate();
 		frame.repaint();
 	}
+
 	public void redrawCards() {
 		ArrayList<Card> dealerHand = game.dealer.hand.getCards();
 		ArrayList<Card> playerHand = game.player.hand.getCards();
@@ -141,9 +495,13 @@ public class BlackjackGUI {
 		// draw dealer hand
 		JPanel dealerPanel = new JPanel();
 		dealerPanel.setLayout(new GridLayout(1, dealerHand.size()));
-		dealerPanel.setBackground(new Color(0,153,0));
-		for (int i=0; i<dealerHand.size(); i++) {
-			if (i == dealerHand.size()-1) {
+		dealerPanel.setBackground(new Color(0, 153, 0));
+
+		JLabel dealerTotal = new JLabel("Dealer:");
+		dealerPanel.add(dealerTotal);
+
+		for (int i = 0; i < dealerHand.size(); i++) {
+			if (i == dealerHand.size() - 1) {
 				JLabel dealerPic = new JLabel(new ImageIcon("images/BacksideOfCard.png"));
 				dealerPic.setSize(1, 1);
 				dealerPanel.add(dealerPic);
@@ -157,8 +515,12 @@ public class BlackjackGUI {
 		// draw player hand
 		JPanel playerPanel = new JPanel();
 		playerPanel.setLayout(new GridLayout(1, playerHand.size()));
-		playerPanel.setBackground(new Color(0,153,0));
-		for (int i=0; i<playerHand.size(); i++) {
+		playerPanel.setBackground(new Color(0, 153, 0));
+
+		JLabel playerTotal = new JLabel("Player:");
+		playerPanel.add(playerTotal);
+
+		for (int i = 0; i < playerHand.size(); i++) {
 			JLabel playerPic = new JLabel(new ImageIcon(playerHand.get(i).getPath()));
 			playerPanel.add(playerPic);
 		}
@@ -168,176 +530,13 @@ public class BlackjackGUI {
 		frame.validate();
 		frame.repaint();
 	}
-
 	public void exit() {
-		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+		frame.dispose();
 	}
 
-	public void endGame() {
-		GameManager newGame = new GameManager();
-		new BlackjackGUI(newGame);
-	}
-
-	public void checkBlackjack() {
-		if (game.player.getPlayerTotal() == 21) {
-			System.out.println("Player has instant blackjack");
-		} else if (game.dealer.getDealerTotal() == 21) {
-			System.out.println("Dealer has instant blackjack");
-		}
-	}
-
-
-	public void startingBet(){
-		mainPanel.removeAll();
-		frame.invalidate();
-		frame.validate();
-		frame.pack();
-		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
-		frame.repaint();
-		
-		JPanel betPanel = new JPanel();
-		betPanel.setLayout(new BorderLayout());
-		betPanel.setBackground(Color.GREEN);
-		
-		JPanel betNorth = new JPanel();
-		JPanel betNorthWest = new JPanel();
-		JPanel betNorthEast = new JPanel();
-		betNorth.setLayout(new FlowLayout());
-		JLabel bet = new JLabel("Bet:  ");
-		JLabel pot = new JLabel("Pot:  "/*+ currentAmoutn*/);
-		betNorth.add(bet);
-		JTextField input = new JTextField("What would you like your bet to be?  ");
-		betNorth.add(input);
-		String betAmountString = input.getText();
-		int betAmount = Integer.parseInt(betAmountString);
-		System.out.println(getBet(betAmount));
-		
-		JPanel betSouth = new JPanel();
-		betSouth.add(pot);
-		betPanel.add(betNorth,BorderLayout.NORTH);
-		betPanel.add(betSouth,BorderLayout.SOUTH);
-		betNorth.add(betNorthWest,betNorthEast);
-		mainPanel.add(betPanel);
-		
-		frame.invalidate();
-		frame.validate();
-		frame.repaint();
-		}
-	public int getBet(int betAmount) {
-		int betAmount1 = betAmount;
-		return betAmount1;
-	}
-	public void winOrLose() {
-		// Blackjack
-		if (game.player.getPlayerTotal() == 21) {
-			System.out.println("Player has 21! Congrats!");
-			// Return a YOU WIN BOX
-			// Return original bet + earnings + half earnings
-			// Restart game with new amount
-		} else if (game.dealer.getDealerTotal() == 21) {
-			System.out.println("Dealer has BlackJack! Congrats!");
-			// Return a YOU LOSE BOX
-			// Restart game with new amount
-		} else if (game.player.getPlayerTotal() == game.dealer.getDealerTotal()) {
-			System.out.println("PUSH");
-		} else if (game.player.getPlayerTotal() > game.dealer.getDealerTotal() && game.player.getPlayerTotal() < 22) {
-			System.out.println("Player Wins!! Player has: " + game.player.getPlayerTotal() + ". Dealer has "
-					+ game.dealer.getDealerTotal());
-		} else if (game.player.getPlayerTotal() < game.dealer.getDealerTotal() && game.dealer.getDealerTotal() < 22) {
-			System.out.println("Dealer Wins!! Dealer has: " + game.dealer.getDealerTotal() + ". Player has "
-					+ game.player.getPlayerTotal());
-
-		} else if (game.dealer.getDealerTotal() > 21) {
-			System.out.println("Dealer Bust: " + game.dealer.getDealerTotal());
-		}
-
-	}
-
-	public void GameOver() {
-		System.out.println("GameOver");
-		mainPanel.removeAll();
-		frame.invalidate();
-		frame.validate();
-		frame.pack();
-		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
-		frame.repaint();
-		
-		JPanel mainPanelTwo = new JPanel();
-		mainPanelTwo.setBackground(Color.black);
-		JLabel gameOver = new JLabel(new ImageIcon("images/GameOver.png"));
-		JLabel gameOver2 = new JLabel("Player Total:  " + game.player.getPlayerTotal() + "   ");
-		JLabel gameOver3 = new JLabel("Dealer Total:  " + game.dealer.getDealerTotal());
-		gameOver2.setForeground(Color.RED);
-		gameOver2.setFont(new Font("Serif", Font. BOLD, 45));
-		gameOver3.setForeground(Color.RED);
-		gameOver3.setFont(new Font("Serif", Font. BOLD, 45));
-		mainPanelTwo.add(gameOver);
-		mainPanelTwo.add(gameOver2);
-		mainPanelTwo.add(gameOver3);
-		mainPanel.add(mainPanelTwo);
-		
-		frame.invalidate();
-		frame.validate();
-		frame.repaint();
-		
-		
-	}
-	public void winner() {
-		System.out.println("Winner");
-		mainPanel.removeAll();
-		frame.invalidate();
-		frame.validate();
-		frame.pack();
-		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
-		frame.repaint();
-		
-		JPanel mainPanelTwo = new JPanel();
-		mainPanelTwo.setBackground(Color.black);
-		JLabel winner = new JLabel(new ImageIcon("images/winnner.png"));
-		JLabel winner2 = new JLabel("Player Total:  " + game.player.getPlayerTotal());
-		JLabel winner3 = new JLabel("Dealer Total:  " + game.dealer.getDealerTotal());
-		winner2.setForeground(Color.RED);
-		winner2.setFont(new Font("Serif", Font. BOLD, 45));
-		winner3.setForeground(Color.RED);
-		winner3.setFont(new Font("Serif", Font. BOLD, 45));
-		mainPanelTwo.add(winner);
-		mainPanelTwo.add(winner2);
-		mainPanelTwo.add(winner3);
-		mainPanel.add(mainPanelTwo);
-		
-		frame.invalidate();
-		frame.validate();
-		frame.repaint();
-		
-		
-	}
-	public void push() {
-		System.out.println("Push");
-		mainPanel.removeAll();
-		frame.invalidate();
-		frame.validate();
-		frame.pack();
-		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
-		frame.repaint();
-		
-		JPanel mainPanelTwo = new JPanel();
-		mainPanelTwo.setBackground(Color.black);
-		JLabel push = new JLabel(new ImageIcon("images/Push.png"));
-		JLabel push2 = new JLabel("Player Total:  " + game.player.getPlayerTotal());
-		JLabel push3 = new JLabel("Dealer Total:  " + game.dealer.getDealerTotal());
-		push2.setForeground(Color.RED);
-		push2.setFont(new Font("Serif", Font. BOLD, 45));
-		push3.setForeground(Color.RED);
-		push3.setFont(new Font("Serif", Font. BOLD, 45));
-		mainPanelTwo.add(push);
-		mainPanelTwo.add(push2);
-		mainPanelTwo.add(push3);
-		mainPanel.add(mainPanelTwo);
-		
-		frame.invalidate();
-		frame.validate();
-		frame.repaint();
-		
-		
+	public void disableButtons() {
+		standBtn.setEnabled(false);
+		doubleBtn.setEnabled(false);
+		hitBtn.setEnabled(false);
 	}
 }

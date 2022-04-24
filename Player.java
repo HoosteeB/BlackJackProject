@@ -1,7 +1,5 @@
 public class Player {
-	
-	
-	Hand hand = new Hand();
+Hand hand = new Hand();
 
 	GameManager game;
 	
