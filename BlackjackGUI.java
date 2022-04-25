@@ -98,6 +98,8 @@ public class BlackjackGUI {
 		
 		
 		JLabel pot = new JLabel("Current Amount:  $" + currentMoney);
+		pot.setForeground(Color.WHITE);
+		pot.setFont(new Font("Serif", Font. BOLD, 20));
 		betSouth.add(pot);
 		
 		JPanel center = new JPanel();
@@ -106,11 +108,10 @@ public class BlackjackGUI {
 		
 		
 		
-		JLabel welcomeText = new JLabel("Welcome to BlackJack");
+		JLabel welcomeText = new JLabel("Welcome to Blackjack");
 		welcomeText.setLayout(new FlowLayout());
-		welcomeText.setForeground(Color.BLACK);
-		
-		welcomeText.setFont(new Font("Serif", Font. BOLD, 80));
+		welcomeText.setFont(new Font("Serif", Font. BOLD, 81));
+		welcomeText.setForeground(Color.WHITE);
 		
 		center.add(welcomeText);
 		
@@ -234,6 +235,66 @@ public class BlackjackGUI {
 	}
 	public void playerBlackjack() {
 		System.out.println("Player Blackjack");
+		mainPanel.removeAll();
+		frame.pack();
+		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+
+
+		JPanel mainPanelTwo = new JPanel();
+		mainPanelTwo.setLayout(new BorderLayout());
+		
+		
+		JPanel north = new JPanel();
+		JPanel center = new JPanel();
+		JPanel south = new JPanel();
+		
+		JLabel winner = new JLabel(new ImageIcon("images/winnner.png"));
+		JLabel winner2 = new JLabel("Player Total:  " + game.player.getPlayerTotal() + "	");
+		JLabel winner3 = new JLabel("Dealer Total:  " + game.dealer.getDealerTotal());
+		
+		winner2.setForeground(Color.RED);
+		winner2.setFont(new Font("Serif", Font.BOLD, 45));
+		winner3.setForeground(Color.RED);
+		winner3.setFont(new Font("Serif", Font.BOLD, 45));
+		
+		center.add(winner);
+		north.add(winner2);
+		north.add(winner3);
+		
+		JButton continueGame = new JButton();
+		continueGame.setText("Continue");
+		continueGame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				exit();
+				new GameManager(currentAmount + (betAmount + (betAmount/2)));
+			}
+		});
+		
+		JButton exitGame = new JButton();
+		exitGame.setText("Exit");
+		exitGame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				exit();
+			}
+		});
+		
+		south.setBackground(Color.BLACK);
+		south.add(continueGame);
+		south.add(exitGame);
+		
+		mainPanelTwo.add(north, BorderLayout.NORTH);
+		mainPanelTwo.add(center, BorderLayout.CENTER);
+		mainPanelTwo.add(south, BorderLayout.SOUTH);
+		
+		mainPanel.add(mainPanelTwo);
+
+		frame.invalidate();
+		frame.validate();
+		frame.repaint();
+
+	}
+	public void dealerBlackjack() {
+		System.out.println("Dealer Blackjack");
 		mainPanel.removeAll();
 		frame.pack();
 		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
