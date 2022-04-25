@@ -46,14 +46,29 @@ public class BlackjackGUI {
 
 		JPanel betNorth = new JPanel();
 		betNorth.setLayout(new FlowLayout());
-		betNorth.setBackground(Color.GREEN);
+		betNorth.setBackground(new Color(0,153,0));
 		
+		/*JButton infoBtn = new JButton();
+		infoBtn.setText("Info");
+		infoBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {	
+				gameInfo();
+				
+			}
+		});
+		
+		betNorth.add(infoBtn); */
 		
 		JLabel bet = new JLabel("Bet:  $");
+		bet.setFont(new Font("Serif", Font. BOLD, 20));
+		bet.setForeground(Color.WHITE);
 		betNorth.add(bet);
 		
 		JTextField input = new JTextField(16);
+		//input.setSize(20, 20);
 		betNorth.add(input);
+		
+		
 		
 		JButton enterBet = new JButton();
 		enterBet.setText("Enter");
@@ -63,10 +78,10 @@ public class BlackjackGUI {
 				String betAmountString = input.getText();
 				String replacedCharacters = betAmountString.replaceAll("[^\\p{IsDigit}]","");
 				betAmount = Integer.parseInt(replacedCharacters);
-				if(currentAmount == 0 && betAmount == 0) {
+			    if(currentAmount == 0 && betAmount == 0) {
 					kickedOut();
 				} else if (currentAmount < betAmount) {
-					JOptionPane.showMessageDialog(null, "Please enter a valid number.");
+					JOptionPane.showMessageDialog(null, "Please enter a valid amount.");
 				} else {
 					newAmount = currentAmount - betAmount;
 					blackjackTable();
@@ -79,16 +94,23 @@ public class BlackjackGUI {
 		betNorth.add(enterBet);
 		
 		JPanel betSouth = new JPanel();
-		betSouth.setBackground(Color.GREEN);
+		betSouth.setBackground(new Color(0,153,0));
+		
 		
 		JLabel pot = new JLabel("Current Amount:  $" + currentMoney);
 		betSouth.add(pot);
 		
 		JPanel center = new JPanel();
-		center.setBackground(Color.GREEN);
-		JLabel welcomeText = new JLabel("Welcome to BlackJack");
+		center.setLayout(new GridLayout(1, 1));
+		center.setBackground(new Color(0,153,0));
 		
-		welcomeText.setFont(new Font("Serif", Font. BOLD, 20));
+		
+		
+		JLabel welcomeText = new JLabel("Welcome to BlackJack");
+		welcomeText.setLayout(new FlowLayout());
+		welcomeText.setForeground(Color.BLACK);
+		
+		welcomeText.setFont(new Font("Serif", Font. BOLD, 80));
 		
 		center.add(welcomeText);
 		
@@ -101,6 +123,33 @@ public class BlackjackGUI {
 		frame.add(mainPanel);
 		frame.setVisible(true);
 	}
+	
+	// Ignore this code it needs to be fixed
+	/* public void gameInfo() {
+		mainPanel.removeAll();
+		frame.pack();
+		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+		mainPanel = new JPanel();
+		mainPanel.setLayout(new FlowLayout());
+		
+		JLabel info = new JLabel("Blackjack is a casino-aged game that requires a mental aptitude for odds and common sense.  "
+				+ "The game’s object is to “beat” the house and not the other players involved.  "
+				+ "Cards are dealt off the top of the deck; the first is placed in front of the player (face-up), the second in front of the dealer(face-down), "
+				+ "the third to the player face up again, and the last to the dealer, face down.  Blackjack, also called ‘21,’  is simple in a name. "
+				+ "The object is to have the highest value hand while staying under or equal to 21.  "
+				+ "While the dealer has set rules,  the player has the option to stand, hit, or double down.  "
+				+ "For example, if a player wants to play aggressively and hit on hard 18 (18 with no ace),  they can do so.  "
+				+ "The dealer, however, must hit on soft 17 or below and stand on hard 18 or above.  "
+				+ "A good play would include standing on 12 when the dealer is showing a six because the dealer must hit, and the odds suggest that the next card to roll off will likely be high than a 5.  "
+				+ "Should the player get “BlackJack” right away (any value ten-card paired with any ace), the player shall instantly be awarded 1.5x their original bet.");
+		
+		mainPanel.add(info);
+		frame.add(mainPanel);
+		
+		frame.invalidate();
+		frame.validate();
+		frame.repaint();
+	} */
 	
 	public void kickedOut() {
 		mainPanel.removeAll();
@@ -329,7 +378,7 @@ public class BlackjackGUI {
 		
 		JLabel winner = new JLabel(new ImageIcon("images/winnner.png"));
 		JLabel winner2 = new JLabel("Player Total:  " + game.player.getPlayerTotal() + "	");
-		JLabel winner3 = new JLabel("Dealer Total:  " + game.dealer.getDealerTotal());
+		JLabel winner3 = new JLabel("	Dealer Total:  " + game.dealer.getDealerTotal());
 		
 		winner2.setForeground(Color.RED);
 		winner2.setFont(new Font("Serif", Font.BOLD, 45));
@@ -456,7 +505,9 @@ public class BlackjackGUI {
 		dealerPanel.setLayout(new GridLayout(1, dealerHand.size()));
 		dealerPanel.setBackground(new Color(0, 153, 0));
 
-		JLabel dealerTotal = new JLabel("Dealer:");
+		JLabel dealerTotal = new JLabel("	Dealer:");
+		dealerTotal.setFont(new Font("Serif", Font.BOLD, 45));
+		dealerTotal.setForeground(Color.WHITE);
 		dealerPanel.add(dealerTotal);
 
 		for (int i = 0; i < dealerHand.size(); i++) {
@@ -470,7 +521,9 @@ public class BlackjackGUI {
 		playerPanel.setLayout(new GridLayout(1, playerHand.size()));
 		playerPanel.setBackground(new Color(0, 153, 0));
 
-		JLabel playerTotal = new JLabel("Player:");
+		JLabel playerTotal = new JLabel("	Player:");
+		playerTotal.setFont(new Font("Serif", Font.BOLD, 45));
+		playerTotal.setForeground(Color.WHITE);
 		playerPanel.add(playerTotal);
 
 		for (int i = 0; i < playerHand.size(); i++) {
@@ -497,7 +550,9 @@ public class BlackjackGUI {
 		dealerPanel.setLayout(new GridLayout(1, dealerHand.size()));
 		dealerPanel.setBackground(new Color(0, 153, 0));
 
-		JLabel dealerTotal = new JLabel("Dealer:");
+		JLabel dealerTotal = new JLabel("	Dealer:");
+		dealerTotal.setFont(new Font("Serif", Font.BOLD, 45));
+		dealerTotal.setForeground(Color.WHITE);
 		dealerPanel.add(dealerTotal);
 
 		for (int i = 0; i < dealerHand.size(); i++) {
@@ -517,7 +572,9 @@ public class BlackjackGUI {
 		playerPanel.setLayout(new GridLayout(1, playerHand.size()));
 		playerPanel.setBackground(new Color(0, 153, 0));
 
-		JLabel playerTotal = new JLabel("Player:");
+		JLabel playerTotal = new JLabel("	Player:");
+		playerTotal.setFont(new Font("Serif", Font.BOLD, 45));
+		playerTotal.setForeground(Color.WHITE);
 		playerPanel.add(playerTotal);
 
 		for (int i = 0; i < playerHand.size(); i++) {
