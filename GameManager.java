@@ -35,6 +35,12 @@ public class GameManager {
 			gui.frame.dispose();	
 		}
 	};
+	TimerTask playerBlackjackScreenTimer = new TimerTask() {
+		public void run() {
+			gui.playerBlackjack();	
+		}
+		
+	};
 	
 
 	public GameManager(int currentAmount) {
@@ -101,7 +107,7 @@ public class GameManager {
 	public void checkBlackjack() {
 		if (player.getPlayerTotal() == 21) {
 			System.out.println("Player has instant blackjack");
-			time.schedule(winnerScreenTimer, 1000);
+			time.schedule(playerBlackjackScreenTimer, 1000);
 		} else if (dealer.getDealerTotal() == 21) {
 			System.out.println("Dealer has instant blackjack");
 			time.schedule(loserScreenTimer, 1000);
