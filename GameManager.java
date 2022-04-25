@@ -41,6 +41,12 @@ public class GameManager {
 		}
 		
 	};
+	TimerTask dealerBlackjackScreenTimer = new TimerTask() {
+		public void run() {
+			gui.dealerBlackjack();	
+		}
+		
+	};
 	
 
 	public GameManager(int currentAmount) {
